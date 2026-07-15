@@ -9,6 +9,7 @@ import {
 } from "@/types/booking";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+const IS_NGROK_API = API_BASE_URL.includes(".ngrok-free.dev");
 const ADMIN_TOKEN_KEY = "rtr_admin_token";
 const ADMIN_LOGIN_PATH = "/admin-panel/login";
 const BOOKINGS_CHANGED_EVENT = "rtr-bookings-changed";
@@ -31,7 +32,12 @@ export class ApiError extends Error {
 
 async function request<T>(path: string, options: RequestInit = {}, admin = false): Promise<T> {
   const headers = new Headers(options.headers);
-  headers.set("Content-Type", "application/json");
+  if (options.body) {
+    headers.set("Content-Type", "application/json");
+  }
+  if (IS_NGROK_API) {
+    headers.set("ngrok-skip-browser-warning", "true");
+  }
   if (admin) {
     const token = localStorage.getItem(ADMIN_TOKEN_KEY);
     if (token) headers.set("Authorization", `Basic ${token}`);
