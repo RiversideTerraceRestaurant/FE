@@ -51,6 +51,28 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        booking: {
+          confirmed: {
+            DEFAULT: "hsl(var(--booking-confirmed))",
+            foreground: "hsl(var(--booking-confirmed-foreground))",
+          },
+          pending: {
+            DEFAULT: "hsl(var(--booking-pending))",
+            foreground: "hsl(var(--booking-pending-foreground))",
+          },
+          conflict: {
+            DEFAULT: "hsl(var(--booking-conflict))",
+            foreground: "hsl(var(--booking-conflict-foreground))",
+          },
+          past: {
+            DEFAULT: "hsl(var(--booking-past))",
+            foreground: "hsl(var(--booking-past-foreground))",
+          },
+        },
+        timeline: {
+          grid: "hsl(var(--timeline-grid))",
+          header: "hsl(var(--timeline-header))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

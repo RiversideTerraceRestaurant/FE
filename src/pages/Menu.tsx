@@ -1,5 +1,6 @@
 import {useState, useEffect, useCallback, useRef} from "react";
 import { Search } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,9 +13,8 @@ import {
 import { MenuItemCard } from "@/components/MenuItemCard";
 import { MobileMenuItemCard } from "@/components/MobileMenuItemCard";
 import { CategoryScroller } from "@/components/CategoryScroller";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { MenuItemDetailModal } from "@/components/MenuItemDetailModal";
-import { Navigation } from "@/components/Navigation";
-import { Snowfall } from "@/components/Snowfall";
 import {
   Pagination,
   PaginationContent,
@@ -26,6 +26,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Category, MenuItem } from "@/type/type";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -41,6 +42,9 @@ const Menu = () => {
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { t } = useLanguage();
+  const location = useLocation();
+  const isMenuOnly = location.pathname === "/menu-only";
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
@@ -53,9 +57,8 @@ const Menu = () => {
         setHeroHeight(heroRef.current!.offsetHeight);
       };
 
-      updateHeight(); // chạy lần đầu
+      updateHeight();
 
-      // update nếu window resize
       window.addEventListener("resize", updateHeight);
       return () => window.removeEventListener("resize", updateHeight);
     }
@@ -130,14 +133,14 @@ const Menu = () => {
       setTotalCount(count || 0);
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to load menu",
+        title: t("menuLoadError"),
+        description: t("menuLoadFailed"),
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchQuery, selectedCategory, sortBy, toast]);
+  }, [currentPage, searchQuery, selectedCategory, sortBy, toast, t]);
 
   const trackPageView = async () => {
     try {
@@ -188,12 +191,15 @@ const Menu = () => {
     <div className="min-h-screen bg-background relative">
       {/* Full Page Snowfall Effect */}
 
-      
-      <Navigation />
       <div
         ref={heroRef}
         className="hero-section relative w-full h-[120px] md:h-[155px] lg:h-[180px] overflow-hidden z-0"
     >
+      {isMenuOnly && (
+          <div className="absolute right-3 top-3 z-20 rounded-md bg-white/90 shadow-sm backdrop-blur-sm">
+            <LanguageSelector />
+          </div>
+      )}
       {/* Hero background */}
       <img
           src="https://res.cloudinary.com/dbp8ozwty/image/upload/v1764899267/z7291253840965_9eefef40c488b1bd2d17bff28170f43f_1_wg9t7t.jpg"
@@ -203,7 +209,7 @@ const Menu = () => {
 
       {/* DECOR ITEMS FROM CLOUDINARY */}
 
-      {/* Chuông – góc trên phải */}
+      {/* Bell in the top-right corner */}
   {/*      <img*/}
   {/*          src="https://res.cloudinary.com/dbp8ozwty/image/upload/v1765089200/image-removebg-preview_4_qqfjjh.png"*/}
   {/*          alt="Bell"*/}
@@ -214,7 +220,7 @@ const Menu = () => {
   {/*"*/}
   {/*      />*/}
 
-        {/* Mũ Noel – cạnh quả chuông */}
+        {/* Christmas hat next to the bell */}
     {/*  <img*/}
     {/*      src="https://res.cloudinary.com/dbp8ozwty/image/upload/v1765088397/pngtree-snowman-winter-christmas-element-seven-png-image_10232808-removebg-preview_1_cfcrjx.png"*/}
     {/*      alt="Snow Man"*/}
@@ -225,7 +231,7 @@ const Menu = () => {
     {/*"*/}
     {/*  />*/}
 
-      {/* Cây thông – góc dưới trái */}
+      {/* Christmas tree in the bottom-left corner */}
     {/*  <img*/}
     {/*      src="https://res.cloudinary.com/dbp8ozwty/image/upload/v1765088065/tree_z0eikt.png"*/}
     {/*      alt="Christmas Tree"*/}
@@ -239,7 +245,7 @@ const Menu = () => {
 
 
       {/* Filters Section */}
-      <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-md border-b shadow-sm">
+      <div className={`sticky z-40 bg-background/95 backdrop-blur-md border-b shadow-sm ${isMenuOnly ? "top-0" : "top-[113px]"}`}>
         <div className="container mx-auto max-w-6xl px-4 py-4">
 
           {/* Search + Sort Row */}
@@ -247,7 +253,7 @@ const Menu = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                  placeholder="Search menu..."
+                  placeholder={t("menuSearch")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 border-border focus:ring-2 focus:ring-primary/20 transition-all h-10"
@@ -256,14 +262,14 @@ const Menu = () => {
 
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-[130px] border-border h-10">
-                <SelectValue placeholder="Sort" />
+                <SelectValue placeholder={t("menuSort")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="default">Default</SelectItem>
+                <SelectItem value="default">{t("menuDefault")}</SelectItem>
                 <SelectItem value="name-asc">A-Z</SelectItem>
                 <SelectItem value="name-desc">Z-A</SelectItem>
-                <SelectItem value="price-asc">Price ↑</SelectItem>
-                <SelectItem value="price-desc">Price ↓</SelectItem>
+                <SelectItem value="price-asc">{t("menuPriceLow")}</SelectItem>
+                <SelectItem value="price-desc">{t("menuPriceHigh")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -289,7 +295,7 @@ const Menu = () => {
           </div>
         ) : menuItems.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-xl text-muted-foreground">No menu items found</p>
+            <p className="text-xl text-muted-foreground">{t("menuNoItems")}</p>
           </div>
         ) : (
           <>
@@ -346,8 +352,8 @@ const Menu = () => {
 
             {/* Results info */}
             <p className="text-center text-sm text-muted-foreground mt-4">
-              Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} -{" "}
-              {Math.min(currentPage * ITEMS_PER_PAGE, totalCount)} of {totalCount} items
+              {t("menuShowing")} {(currentPage - 1) * ITEMS_PER_PAGE + 1} -{" "}
+              {Math.min(currentPage * ITEMS_PER_PAGE, totalCount)} {t("menuOf")} {totalCount} {t("menuItems")}
             </p>
           </>
         )}
@@ -367,7 +373,7 @@ const Menu = () => {
             <span className="text-sm opacity-90 mb-4" >Riverside Terrace</span>{" "}
             <span className="text-sm opacity-90 mb-4">Restaurant</span>
           </p>
-          <p className="text-sm opacity-90 mb-4">493 Tran Hung Dao Street, An Hai Ward, Da Nang City, Viet Nam</p>
+          <p className="text-sm opacity-90 mb-4">{t("footerAddress")}</p>
           <div className="h-px w-32 bg-white/30 mx-auto"></div>
           <p className="text-xs mt-4 opacity-75">(+84) 911500440</p>
         </div>

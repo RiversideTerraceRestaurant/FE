@@ -29,7 +29,7 @@ export const LanguageSelector = () => {
     return (
         <Select value={language} onValueChange={(val) => setLanguage(val as Language)}>
             <SelectTrigger className="w-[120px] h-9 gap-2 flex items-center">
-                {/* Nếu chưa chọn gì → hiện Globe — nếu đã có language → hiện flag */}
+                {/* Show a flag for the active language, otherwise show the globe icon. */}
                 {flag ? (
                     <span className="text-xl">{flag}</span>
                 ) : (

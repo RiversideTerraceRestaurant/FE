@@ -10,7 +10,7 @@ interface MenuItemDetailModalProps {
 }
 
 export const MenuItemDetailModal = ({ item, onClose }: MenuItemDetailModalProps) => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [isZoomed, setIsZoomed] = useState(false);
 
   if (!item) return null;
@@ -124,7 +124,7 @@ export const MenuItemDetailModal = ({ item, onClose }: MenuItemDetailModalProps)
         style={{ animationDelay: "0.15s" }}
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to Menu
+        {t("menuBack")}
       </Button>
     </div>
   );

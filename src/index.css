@@ -11,11 +11,11 @@ html, body {
 
 .frost-panel {
   position: relative;
-  background: rgba(255, 255, 255, 0.25);       /* nền đục nhẹ */
-  backdrop-filter: blur(10px);                 /* hiệu ứng kính mờ lạnh */
+  background: rgba(255, 255, 255, 0.25);       /* Light translucent background */
+  backdrop-filter: blur(10px);                 /* Frosted glass blur */
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0, 0, 30, 0.15); /* bóng xanh đậm nhẹ */
+  box-shadow: 0 4px 18px rgba(0, 0, 30, 0.15); /* Soft dark blue shadow */
 }
 .panel-item{
   position: relative;
@@ -23,7 +23,7 @@ html, body {
   border-radius: 12px;
   color: black;
 }
-/* viền băng xanh */
+/* Blue ice border */
 .frost-panel > * {
   position: relative;
   z-index: 10;
@@ -32,19 +32,52 @@ html, body {
   filter: brightness(0.7) contrast(4.5);
 }
 
+.time-map-scope {
+  --background: 210 20% 98%;
+  --foreground: 220 20% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 20% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 20% 10%;
+  --primary: 220 70% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 15% 93%;
+  --secondary-foreground: 220 20% 20%;
+  --muted: 220 15% 95%;
+  --muted-foreground: 220 10% 45%;
+  --accent: 220 15% 90%;
+  --accent-foreground: 220 20% 15%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 13% 90%;
+  --input: 220 13% 90%;
+  --ring: 220 70% 50%;
+  --radius: 0.75rem;
+  --booking-confirmed: 145 63% 42%;
+  --booking-confirmed-foreground: 0 0% 100%;
+  --booking-pending: 45 93% 47%;
+  --booking-pending-foreground: 30 20% 15%;
+  --booking-conflict: 0 72% 51%;
+  --booking-conflict-foreground: 0 0% 100%;
+  --booking-past: 45 93% 47%;
+  --booking-past-foreground: 30 20% 15%;
+  --timeline-grid: 220 13% 92%;
+  --timeline-header: 220 15% 96%;
+}
+
 .frost-panel::before {
   content: "";
   position: absolute;
   inset: 0;
-  border: 2px solid rgba(120, 180, 255, 0.7);  /* viền xanh lạnh */
+  border: 2px solid rgba(120, 180, 255, 0.7);  /* Cool blue border */
   border-radius: inherit;
   pointer-events: none;
   box-shadow:
           0 0 15px rgba(140, 200, 255, 0.7),
-          inset 0 0 12px rgba(180, 220, 255, 0.4);   /* ánh sáng băng */
+          inset 0 0 12px rgba(180, 220, 255, 0.4);   /* Ice glow */
 }
 
-/* hiệu ứng hạt frost nhẹ */
+/* Subtle frost grain effect */
 .frost-panel::after {
   content: "";
   position: absolute;

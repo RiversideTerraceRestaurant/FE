@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Category {
   id: string;
@@ -21,6 +22,7 @@ export const CategoryScroller = ({
                                  }: CategoryScrollerProps) => {
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   return (
       <div
@@ -37,7 +39,7 @@ export const CategoryScroller = ({
                     : "bg-muted text-muted-foreground hover:bg-muted/80"
             }`}
         >
-          All
+          {t("categoryAll")}
         </button>
 
         {/* Category Buttons */}
