@@ -13,6 +13,7 @@ const IS_NGROK_API = API_BASE_URL.includes(".ngrok-free.dev");
 const ADMIN_TOKEN_KEY = "rtr_admin_token";
 const ADMIN_LOGIN_PATH = "/admin-panel/login";
 const BOOKINGS_CHANGED_EVENT = "rtr-bookings-changed";
+const AVAILABILITY_PAST_TOLERANCE_MS = 60_000;
 
 interface ApiErrorBody {
   code?: string;
@@ -68,6 +69,42 @@ function notifyBookingsChanged() {
   localStorage.setItem(BOOKINGS_CHANGED_EVENT, String(Date.now()));
 }
 
+function toDateInputValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function toTimeInputValue(date: Date) {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+function ceilToNextMinute(date: Date) {
+  const rounded = new Date(date);
+  if (rounded.getSeconds() > 0 || rounded.getMilliseconds() > 0) {
+    rounded.setMinutes(rounded.getMinutes() + 1);
+  }
+  rounded.setSeconds(0, 0);
+  return rounded;
+}
+
+function getAvailabilityStartTime(date: string, startTime: string) {
+  const now = new Date();
+  if (date !== toDateInputValue(now)) return startTime;
+
+  const requestedStart = new Date(`${date}T${startTime}`);
+  if (Number.isNaN(requestedStart.getTime())) return startTime;
+
+  const toleratedPast = new Date(now.getTime() - AVAILABILITY_PAST_TOLERANCE_MS);
+  if (requestedStart < toleratedPast) return startTime;
+
+  const earliestStart = ceilToNextMinute(new Date(now.getTime() + AVAILABILITY_PAST_TOLERANCE_MS));
+  return requestedStart < earliestStart ? toTimeInputValue(earliestStart) : startTime;
+}
+
 export const adminAuth = {
   login: async (username: string, password: string) => {
     const token = btoa(`${username}:${password}`);
@@ -97,10 +134,11 @@ export const publicApi = {
     endTime: string;
     guests: number;
   }) => {
+    const startTime = getAvailabilityStartTime(params.date, params.startTime);
     const search = new URLSearchParams({
       area: params.area,
       date: params.date,
-      startTime: params.startTime,
+      startTime,
       endTime: params.endTime,
       guests: String(params.guests),
     });
