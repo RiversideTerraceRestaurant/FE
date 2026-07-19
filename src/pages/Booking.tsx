@@ -48,6 +48,7 @@ export default function Booking() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<BookingResult | null>(null);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const tablesRequestIdRef = useRef(0);
   const [canvasContainerWidth, setCanvasContainerWidth] = useState(520);
   const { toast } = useToast();
   const { t } = useLanguage();
@@ -63,7 +64,7 @@ export default function Booking() {
     note: "",
   });
 
-  const displayTables = [...tables].sort((a, b) =>
+  const displayTables = tables.filter((table) => table.area === area).sort((a, b) =>
     a.tableNumber.localeCompare(b.tableNumber, undefined, {
       numeric: true,
       sensitivity: "base",
@@ -141,7 +142,7 @@ export default function Booking() {
 
   useEffect(() => {
     setSelectedTableIds([]);
-    void loadTables();
+    void loadTables({ clear: true });
     void loadImages();
   }, [area, form.bookingDate, form.startTime, form.endTime, form.numberOfGuests]);
 
@@ -157,7 +158,12 @@ export default function Booking() {
     return () => observer.disconnect();
   }, []);
 
-  const loadTables = async () => {
+  const loadTables = async ({ clear = false }: { clear?: boolean } = {}) => {
+    const requestId = tablesRequestIdRef.current + 1;
+    tablesRequestIdRef.current = requestId;
+    if (clear) {
+      setTables([]);
+    }
     setLoadingTables(true);
     try {
       const data = await publicApi.availability({
@@ -167,11 +173,16 @@ export default function Booking() {
         endTime: form.endTime,
         guests: Number(form.numberOfGuests) || 1,
       });
+      if (requestId !== tablesRequestIdRef.current) return;
       setTables(data);
     } catch (error) {
+      if (requestId !== tablesRequestIdRef.current) return;
+      setTables([]);
       toast({ title: t("bookingCannotLoadTables"), description: error instanceof Error ? error.message : t("bookingTryAgain"), variant: "destructive" });
     } finally {
-      setLoadingTables(false);
+      if (requestId === tablesRequestIdRef.current) {
+        setLoadingTables(false);
+      }
     }
   };
 
@@ -287,7 +298,7 @@ export default function Booking() {
         <section className="min-w-0 overflow-hidden rounded-md border bg-white p-3 shadow-card sm:p-4">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="font-semibold">{AREAS.find((item) => item.value === area)?.label} {t("bookingTables")}</h2>
-            <Button type="button" variant="outline" size="sm" onClick={loadTables} disabled={loadingTables}>
+            <Button type="button" variant="outline" size="sm" onClick={() => loadTables()} disabled={loadingTables}>
               {loadingTables ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
               {t("bookingRefresh")}
             </Button>
