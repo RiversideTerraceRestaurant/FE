@@ -3,6 +3,10 @@
     {
       "source": "/backend/:path*",
       "destination": "http://rtrbackend-env.eba-fgepajpp.ap-southeast-2.elasticbeanstalk.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
