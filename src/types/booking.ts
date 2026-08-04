@@ -68,6 +68,12 @@ export interface RequestOtpResponse {
   expiresAt: string;
 }
 
+export interface TableSuggestion {
+  area: RestaurantArea;
+  tables: RestaurantTable[];
+  totalCapacity: number;
+}
+
 export interface ReportSummary {
   totalBookings: number;
   pendingBookings: number;

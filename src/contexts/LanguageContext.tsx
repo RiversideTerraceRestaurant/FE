@@ -117,6 +117,21 @@ const translations: Record<Language, Record<string, string>> = {
     bookingSeats: "seats",
     bookingTableSingular: "table",
     bookingTablePlural: "tables",
+    bookingSuggestBest: "Suggest best table",
+    bookingFindSuggestion: "Find best table",
+    bookingSeating: "Seating preference",
+    bookingInside: "Inside",
+    bookingOutside: "Outside",
+    bookingInsideHint: "Inside searches Roma and Verona. Verona is prioritized for 3-6 guests.",
+    bookingOutsideHint: "Outside searches Terrace only.",
+    bookingSuggestionFound: "Best table selected",
+    bookingSuggestionFailed: "Could not suggest a table",
+    bookingSuggestionInvalid: "Enter 1-6 guests and a valid time range.",
+    bookingSuggestionNone: "No suitable adjacent tables are available.",
+    bookingVeronaLocked: "Verona is unavailable",
+    bookingVeronaMinimum: "Verona is reserved for parties of 3 or more.",
+    bookingConfirmationLabel: "I confirm that the information entered above is accurate.",
+    bookingConfirmationRequired: "Please confirm that the information entered above is accurate.",
     statusAvailable: "Available",
     statusHold: "Hold",
     statusReserved: "Reserved",
@@ -146,6 +161,8 @@ const translations: Record<Language, Record<string, string>> = {
     notFoundHome: "Return to Home",
   },
   vi: {
+    bookingConfirmationLabel: "Tôi đảm bảo các thông tin nhập phía trên là chính xác.", bookingConfirmationRequired: "Vui lòng tích xác nhận các thông tin nhập phía trên là chính xác.",
+    bookingSuggestBest: "Gợi ý bàn tốt nhất", bookingFindSuggestion: "Tìm bàn phù hợp", bookingSeating: "Vị trí ngồi", bookingInside: "Trong nhà", bookingOutside: "Ngoài trời", bookingInsideHint: "Trong nhà chỉ tìm Roma và Verona; nhóm 3-6 khách ưu tiên Verona.", bookingOutsideHint: "Ngoài trời chỉ tìm khu Terrace.", bookingSuggestionFound: "Đã chọn bàn phù hợp nhất", bookingSuggestionFailed: "Không thể gợi ý bàn", bookingSuggestionInvalid: "Vui lòng nhập 1-6 khách và khoảng thời gian hợp lệ.", bookingSuggestionNone: "Không còn nhóm bàn liền kề phù hợp.", bookingVeronaLocked: "Không thể chọn Verona", bookingVeronaMinimum: "Verona chỉ dành cho nhóm từ 3 khách trở lên.",
     navHome: "Trang chủ", navBooking: "Đặt bàn", navMenu: "Thực đơn", navAbout: "Giới thiệu", navLogin: "Đăng nhập", navLogout: "Đăng xuất", navDashboard: "Quản trị", navLoggedOut: "Đã đăng xuất", navLoggedOutDescription: "Bạn đã đăng xuất thành công.",
     footerAddress: "493 Đường Trần Hưng Đạo, Phường An Hải, Thành phố Đà Nẵng, Việt Nam",
     homeEyebrow: "Ẩm thực ven sông Đà Nẵng", homeTitle: "Nhà hàng Riverside Terrace", homeSubtitle: "Phong vị Ý ấm áp, phục vụ tận tâm và không gian ven sông thư thái cho bữa tối, nhóm bạn và các dịp kỷ niệm.", homeBook: "Đặt bàn", homeMenu: "Xem thực đơn",
@@ -188,6 +205,63 @@ translations.kz = { ...translations.ru, navHome: "Басты", navBooking: "Бр
 translations.es = { ...translations.en, navHome: "Inicio", navBooking: "Reservas", navMenu: "Menú", navAbout: "Acerca de", navLogin: "Entrar", navLogout: "Salir", navDashboard: "Panel", navLoggedOut: "Sesión cerrada", navLoggedOutDescription: "Has cerrado sesión correctamente.", homeEyebrow: "Comida junto al río en Da Nang", homeTitle: "Restaurante Riverside Terrace", homeSubtitle: "Comida de inspiración italiana, servicio cálido y mesas relajadas junto al río para cenas, grupos y celebraciones.", homeBook: "Reservar mesa", homeMenu: "Ver menú", homeWarmTitle: "Una mesa cálida junto al río", homeWarmText: "Nuestro comedor combina rincones tranquilos, terraza abierta y espacios flexibles para cada ocasión.", homeSpecialTitle: "Platos especiales", homeSpecialText: "Seleccionados desde los datos actuales del menú.", homeExplore: "Ver todos los platos", homePlanTitle: "Planifica tu visita", homePlanText: "Elige zona, hora y mesa con disponibilidad en tiempo real.", homeGoBooking: "Ir a reservas", homeBrowseTitle: "Explorar el menú", homeBrowseText: "Busca platos, categorías, imágenes, descripciones y precios.", homeOpenMenu: "Abrir menú", aboutEyebrow: "Sobre nosotros", aboutText: "Riverside Terrace combina hospitalidad relajada, platos de inspiración italiana y un entorno tranquilo junto al río en Da Nang.", aboutAddress: "Dirección", aboutPhone: "Teléfono", aboutEmail: "Email", aboutHours: "Horario", aboutDaily: "Todos los días: 09:00 - 23:00", aboutFind: "Encuéntranos", aboutMaps: "Abrir Google Maps", bookingTitle: "Reserva tu mesa", bookingDetails: "Datos de reserva", bookingCustomerName: "Nombre del cliente", bookingPhone: "Teléfono", bookingGuests: "Personas", bookingLargeParty: "Las reservas online admiten hasta 6 personas. Para grupos más grandes, contacta con Riverside Terrace en (+84) 911500440 o contact@riversideterrace.local.", bookingChooseTables: "Elige una o más mesas disponibles en el plano", bookingContinue: "Continuar con OTP por email", bookingPendingApproval: "Pendiente de aprobación", bookingRequired: "es obligatorio.", bookingEmailInvalid: "El email no es válido.", bookingPhoneInvalid: "El teléfono no es válido.", bookingGuestInvalid: "El número de personas debe ser mayor que 0.", bookingPastTime: "La hora de reserva no puede estar en el pasado.", bookingEndAfterStart: "La hora de fin debe ser posterior a la de inicio.", bookingCannotLoadTables: "No se puede cargar la disponibilidad", bookingFormIncomplete: "El formulario de reserva está incompleto", bookingOtpSent: "OTP enviado", bookingOtpSentDescription: "Revisa tu email para ver el código.", bookingTryAgain: "Inténtalo de nuevo.", bookingArea: "Zona", bookingTable: "Mesa", bookingDateTime: "Fecha y hora", bookingGuestLabel: "personas", bookingSeats: "asientos", statusAvailable: "Disponible", statusHold: "Retenida", statusReserved: "Reservada", statusOccupied: "Ocupada", statusMaintenance: "Mantenimiento", menuSearch: "Buscar en el menú...", menuSort: "Ordenar", menuDefault: "Predeterminado", menuPriceLow: "Precio menor a mayor", menuPriceHigh: "Precio mayor a menor", menuLoadError: "Error", menuLoadFailed: "No se pudo cargar el menú", menuNoItems: "No se encontraron platos", menuShowing: "Mostrando", menuOf: "de", menuItems: "platos", menuBack: "Volver al menú", categoryAll: "Todo", adminAccess: "Acceso admin", adminSignIn: "Iniciar sesión", adminUseAccount: "Usa una cuenta de administrador.", adminUsername: "Usuario", adminPassword: "Contraseña", adminLoginFailed: "Error de inicio de sesión", adminInvalidCredentials: "Credenciales inválidas", notFoundTitle: "Página no encontrada", notFoundHome: "Volver al inicio" };
 translations.fr = { ...translations.es, navHome: "Accueil", navBooking: "Réserver", navMenu: "Menu", navAbout: "À propos", navLogin: "Connexion", navLogout: "Déconnexion", navDashboard: "Tableau", navLoggedOut: "Déconnecté", navLoggedOutDescription: "Vous avez bien été déconnecté.", homeTitle: "Restaurant Riverside Terrace", homeSubtitle: "Cuisine d'inspiration italienne, service chaleureux et tables paisibles au bord de la rivière.", homeBook: "Réserver une table", homeMenu: "Voir le menu", homeWarmTitle: "Une table chaleureuse au bord de la rivière", homeSpecialTitle: "Plats spéciaux", homeExplore: "Voir tous les plats", homePlanTitle: "Planifier votre visite", homeGoBooking: "Aller à la réservation", homeBrowseTitle: "Parcourir le menu", homeOpenMenu: "Ouvrir le menu", aboutEyebrow: "À propos", aboutAddress: "Adresse", aboutPhone: "Téléphone", aboutHours: "Horaires", aboutDaily: "Tous les jours: 09:00 - 23:00", aboutFind: "Nous trouver", aboutMaps: "Ouvrir Google Maps", bookingTitle: "Réservez votre table", bookingDetails: "Détails de réservation", bookingCustomerName: "Nom du client", bookingPhone: "Téléphone", bookingGuests: "Convives", bookingChooseTables: "Choisissez une ou plusieurs tables disponibles sur le plan", bookingContinue: "Continuer avec l'OTP email", bookingPendingApproval: "En attente d'approbation", bookingRequired: "est obligatoire.", bookingEmailInvalid: "L'email est invalide.", bookingPhoneInvalid: "Le numéro de téléphone est invalide.", bookingCannotLoadTables: "Impossible de charger les disponibilités", bookingOtpSent: "OTP envoyé", bookingTryAgain: "Veuillez réessayer.", bookingArea: "Zone", bookingTable: "Table", bookingDateTime: "Date et heure", bookingGuestLabel: "convives", bookingSeats: "places", statusAvailable: "Disponible", statusHold: "En attente", statusReserved: "Réservée", statusOccupied: "Occupée", statusMaintenance: "Maintenance", menuSearch: "Rechercher dans le menu...", menuSort: "Trier", menuDefault: "Par défaut", menuPriceLow: "Prix croissant", menuPriceHigh: "Prix décroissant", menuLoadError: "Erreur", menuLoadFailed: "Impossible de charger le menu", menuNoItems: "Aucun plat trouvé", menuShowing: "Affichage", menuOf: "sur", menuItems: "plats", menuBack: "Retour au menu", categoryAll: "Tout", adminSignIn: "Connexion", adminUsername: "Utilisateur", adminPassword: "Mot de passe", notFoundTitle: "Page introuvable", notFoundHome: "Retour à l'accueil" };
 translations.it = { ...translations.es, navHome: "Home", navBooking: "Prenota", navMenu: "Menu", navAbout: "Chi siamo", navLogin: "Accedi", navLogout: "Esci", navDashboard: "Dashboard", navLoggedOut: "Disconnesso", navLoggedOutDescription: "Sei uscito correttamente.", homeTitle: "Ristorante Riverside Terrace", homeSubtitle: "Comfort di ispirazione italiana, servizio caldo e tavoli rilassati sul fiume.", homeBook: "Prenota un tavolo", homeMenu: "Vedi menu", homeWarmTitle: "Un tavolo accogliente sul fiume", homeSpecialTitle: "Piatti speciali", homeExplore: "Vedi tutti i piatti", homePlanTitle: "Pianifica la visita", homeGoBooking: "Vai alla prenotazione", homeBrowseTitle: "Sfoglia il menu", homeOpenMenu: "Apri menu", aboutEyebrow: "Chi siamo", aboutAddress: "Indirizzo", aboutPhone: "Telefono", aboutHours: "Orari", aboutDaily: "Ogni giorno: 09:00 - 23:00", aboutFind: "Dove siamo", aboutMaps: "Apri Google Maps", bookingTitle: "Prenota il tuo tavolo", bookingDetails: "Dettagli prenotazione", bookingCustomerName: "Nome cliente", bookingPhone: "Telefono", bookingGuests: "Ospiti", bookingChooseTables: "Scegli uno o più tavoli disponibili dalla mappa", bookingContinue: "Continua con OTP email", bookingPendingApproval: "In attesa di approvazione", bookingRequired: "è obbligatorio.", bookingEmailInvalid: "Email non valida.", bookingPhoneInvalid: "Numero di telefono non valido.", bookingCannotLoadTables: "Impossibile caricare la disponibilità", bookingOtpSent: "OTP inviato", bookingTryAgain: "Riprova.", bookingArea: "Area", bookingTable: "Tavolo", bookingDateTime: "Data e ora", bookingGuestLabel: "ospiti", bookingSeats: "posti", statusAvailable: "Disponibile", statusHold: "In attesa", statusReserved: "Prenotato", statusOccupied: "Occupato", statusMaintenance: "Manutenzione", menuSearch: "Cerca nel menu...", menuSort: "Ordina", menuDefault: "Predefinito", menuPriceLow: "Prezzo crescente", menuPriceHigh: "Prezzo decrescente", menuLoadError: "Errore", menuLoadFailed: "Impossibile caricare il menu", menuNoItems: "Nessun piatto trovato", menuShowing: "Mostra", menuOf: "di", menuItems: "piatti", menuBack: "Torna al menu", categoryAll: "Tutto", adminSignIn: "Accedi", adminUsername: "Utente", adminPassword: "Password", notFoundTitle: "Pagina non trovata", notFoundHome: "Torna alla home" };
+
+Object.assign(translations.ko, {
+  bookingSuggestBest: "최적 테이블 추천", bookingFindSuggestion: "최적 테이블 찾기", bookingSeating: "좌석 위치", bookingInside: "실내", bookingOutside: "야외",
+  bookingInsideHint: "실내는 Roma와 Verona에서 검색하며, 3~6명은 Verona를 우선합니다.", bookingOutsideHint: "야외는 Terrace에서만 검색합니다.",
+  bookingSuggestionFound: "최적 테이블이 선택되었습니다", bookingSuggestionFailed: "테이블을 추천할 수 없습니다", bookingSuggestionInvalid: "1~6명과 올바른 시간 범위를 입력해 주세요.", bookingSuggestionNone: "이용 가능한 인접 테이블이 없습니다.",
+  bookingVeronaLocked: "Verona를 선택할 수 없습니다", bookingVeronaMinimum: "Verona는 3명 이상만 이용할 수 있습니다.",
+  bookingConfirmationLabel: "위에 입력한 정보가 정확함을 확인합니다.", bookingConfirmationRequired: "위에 입력한 정보가 정확한지 확인해 주세요.",
+});
+Object.assign(translations.ja, {
+  bookingSuggestBest: "最適なテーブルを提案", bookingFindSuggestion: "最適なテーブルを探す", bookingSeating: "座席エリア", bookingInside: "屋内", bookingOutside: "屋外",
+  bookingInsideHint: "屋内はRomaとVeronaから検索し、3～6名はVeronaを優先します。", bookingOutsideHint: "屋外はTerraceのみ検索します。",
+  bookingSuggestionFound: "最適なテーブルを選択しました", bookingSuggestionFailed: "テーブルを提案できません", bookingSuggestionInvalid: "1～6名と正しい時間帯を入力してください。", bookingSuggestionNone: "利用可能な隣接テーブルがありません。",
+  bookingVeronaLocked: "Veronaは選択できません", bookingVeronaMinimum: "Veronaは3名以上のお客様専用です。",
+  bookingConfirmationLabel: "上記の入力情報が正確であることを確認します。", bookingConfirmationRequired: "上記の情報が正確であることを確認してください。",
+});
+Object.assign(translations.cn, {
+  bookingSuggestBest: "推荐最佳餐桌", bookingFindSuggestion: "查找最佳餐桌", bookingSeating: "座位区域", bookingInside: "室内", bookingOutside: "室外",
+  bookingInsideHint: "室内仅搜索Roma和Verona，3至6人优先Verona。", bookingOutsideHint: "室外仅搜索Terrace。",
+  bookingSuggestionFound: "已选择最佳餐桌", bookingSuggestionFailed: "无法推荐餐桌", bookingSuggestionInvalid: "请输入1至6人及有效的时间范围。", bookingSuggestionNone: "没有合适的相邻空桌。",
+  bookingVeronaLocked: "无法选择Verona", bookingVeronaMinimum: "Verona仅供3人及以上使用。",
+  bookingConfirmationLabel: "我确认以上填写的信息准确无误。", bookingConfirmationRequired: "请确认以上填写的信息准确无误。",
+});
+Object.assign(translations.ru, {
+  bookingSuggestBest: "Предложить лучший стол", bookingFindSuggestion: "Найти лучший стол", bookingSeating: "Зона размещения", bookingInside: "В помещении", bookingOutside: "На улице",
+  bookingInsideHint: "В помещении поиск идет по Roma и Verona; для 3–6 гостей приоритет у Verona.", bookingOutsideHint: "На улице поиск идет только по Terrace.",
+  bookingSuggestionFound: "Лучший стол выбран", bookingSuggestionFailed: "Не удалось подобрать стол", bookingSuggestionInvalid: "Укажите от 1 до 6 гостей и корректное время.", bookingSuggestionNone: "Подходящих соседних столов нет.",
+  bookingVeronaLocked: "Verona недоступна", bookingVeronaMinimum: "Verona предназначена для групп от 3 гостей.",
+  bookingConfirmationLabel: "Я подтверждаю, что введенная выше информация верна.", bookingConfirmationRequired: "Подтвердите правильность введенной выше информации.",
+});
+Object.assign(translations.kz, {
+  bookingSuggestBest: "Ең жақсы үстелді ұсыну", bookingFindSuggestion: "Үстелді табу", bookingSeating: "Отыру аймағы", bookingInside: "Іште", bookingOutside: "Сыртта",
+  bookingInsideHint: "Ішкі аймақ Roma және Verona бойынша ізделеді; 3–6 қонаққа Verona басым.", bookingOutsideHint: "Сыртқы аймақ тек Terrace бойынша ізделеді.",
+  bookingSuggestionFound: "Ең жақсы үстел таңдалды", bookingSuggestionFailed: "Үстел ұсыну мүмкін болмады", bookingSuggestionInvalid: "1–6 қонақ пен дұрыс уақытты енгізіңіз.", bookingSuggestionNone: "Сәйкес қатар тұрған бос үстелдер жоқ.",
+  bookingVeronaLocked: "Verona қолжетімсіз", bookingVeronaMinimum: "Verona кемінде 3 қонаққа арналған.",
+  bookingConfirmationLabel: "Жоғарыда енгізілген ақпараттың дұрыстығын растаймын.", bookingConfirmationRequired: "Жоғарыдағы ақпараттың дұрыстығын растаңыз.",
+});
+Object.assign(translations.es, {
+  bookingSuggestBest: "Sugerir la mejor mesa", bookingFindSuggestion: "Buscar la mejor mesa", bookingSeating: "Zona de asiento", bookingInside: "Interior", bookingOutside: "Exterior",
+  bookingInsideHint: "En interior se busca en Roma y Verona; Verona tiene prioridad para 3–6 personas.", bookingOutsideHint: "En exterior solo se busca en Terrace.",
+  bookingSuggestionFound: "Mejor mesa seleccionada", bookingSuggestionFailed: "No se pudo sugerir una mesa", bookingSuggestionInvalid: "Introduce entre 1 y 6 personas y un horario válido.", bookingSuggestionNone: "No hay mesas contiguas adecuadas disponibles.",
+  bookingVeronaLocked: "Verona no está disponible", bookingVeronaMinimum: "Verona está reservada para grupos de 3 o más personas.",
+  bookingConfirmationLabel: "Confirmo que la información introducida arriba es correcta.", bookingConfirmationRequired: "Confirma que la información introducida arriba es correcta.",
+});
+Object.assign(translations.fr, {
+  bookingSuggestBest: "Suggérer la meilleure table", bookingFindSuggestion: "Trouver la meilleure table", bookingSeating: "Zone de placement", bookingInside: "Intérieur", bookingOutside: "Extérieur",
+  bookingInsideHint: "À l'intérieur, la recherche couvre Roma et Verona ; Verona est prioritaire pour 3 à 6 personnes.", bookingOutsideHint: "À l'extérieur, seule la Terrace est recherchée.",
+  bookingSuggestionFound: "Meilleure table sélectionnée", bookingSuggestionFailed: "Impossible de suggérer une table", bookingSuggestionInvalid: "Indiquez de 1 à 6 personnes et une plage horaire valide.", bookingSuggestionNone: "Aucune table adjacente adaptée n'est disponible.",
+  bookingVeronaLocked: "Verona n'est pas disponible", bookingVeronaMinimum: "Verona est réservée aux groupes de 3 personnes ou plus.",
+  bookingConfirmationLabel: "Je confirme que les informations saisies ci-dessus sont exactes.", bookingConfirmationRequired: "Veuillez confirmer que les informations saisies ci-dessus sont exactes.",
+});
+Object.assign(translations.it, {
+  bookingSuggestBest: "Suggerisci il tavolo migliore", bookingFindSuggestion: "Trova il tavolo migliore", bookingSeating: "Zona dei posti", bookingInside: "Interno", bookingOutside: "Esterno",
+  bookingInsideHint: "All'interno la ricerca copre Roma e Verona; Verona ha la priorità per 3–6 ospiti.", bookingOutsideHint: "All'esterno la ricerca copre solo Terrace.",
+  bookingSuggestionFound: "Tavolo migliore selezionato", bookingSuggestionFailed: "Impossibile suggerire un tavolo", bookingSuggestionInvalid: "Inserisci da 1 a 6 ospiti e un intervallo orario valido.", bookingSuggestionNone: "Non sono disponibili tavoli adiacenti adatti.",
+  bookingVeronaLocked: "Verona non è disponibile", bookingVeronaMinimum: "Verona è riservata a gruppi di almeno 3 ospiti.",
+  bookingConfirmationLabel: "Confermo che le informazioni inserite sopra sono corrette.", bookingConfirmationRequired: "Conferma che le informazioni inserite sopra sono corrette.",
+});
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 

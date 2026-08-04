@@ -6,6 +6,7 @@ import {
   RequestOtpResponse,
   RestaurantArea,
   RestaurantTable,
+  TableSuggestion,
 } from "@/types/booking";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
@@ -143,6 +144,25 @@ export const publicApi = {
       guests: String(params.guests),
     });
     return request<RestaurantTable[]>(`/api/public/tables/availability?${search.toString()}`);
+  },
+  suggestBestTable: (params: {
+    seating: "inside" | "outside";
+    date: string;
+    startTime: string;
+    endTime: string;
+    guests: number;
+  }) => {
+    if (!params.date || !params.startTime || !params.endTime || !Number.isFinite(params.guests)) {
+      throw new ApiError(400, { message: "Suggestion date, time and guest count are required." });
+    }
+    const search = new URLSearchParams({
+      seating: params.seating,
+      date: params.date,
+      startTime: getAvailabilityStartTime(params.date, params.startTime),
+      endTime: params.endTime,
+      guests: String(params.guests),
+    });
+    return request<TableSuggestion>(`/api/public/tables/suggest?${search.toString()}`);
   },
   areaImages: (area: RestaurantArea) => request<{ area: RestaurantArea; images: string[] }>(`/api/public/areas/${area}/images`),
   requestOtp: (payload: RequestOtpPayload) =>
