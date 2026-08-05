@@ -166,7 +166,7 @@ export default function AdminBooking() {
         <h2 className="text-2xl font-semibold">Bookings</h2>
         <p className="text-sm text-muted-foreground">Tap a booking to review details and manage its status.</p>
       </div>
-      <div className="grid gap-3 rounded-md border bg-white p-4 md:grid-cols-5">
+      <div className="grid gap-3 rounded-xl border bg-white p-3 sm:p-4 md:grid-cols-5">
         <Input type="date" value={filters.date} onChange={(event) => setFilters({ ...filters, date: event.target.value })} />
         <Select value={filters.area || "ALL"} onValueChange={(value) => setFilters({ ...filters, area: value === "ALL" ? "" : (value as RestaurantArea) })}>
           <SelectTrigger><SelectValue placeholder="Area" /></SelectTrigger>
@@ -226,7 +226,7 @@ export default function AdminBooking() {
       </div>
 
       <Dialog open={Boolean(selectedBooking)} onOpenChange={(open) => !open && closeBooking()}>
-        <DialogContent className="max-h-[92vh] max-w-3xl overflow-y-auto">
+        <DialogContent className="max-h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-[calc(100%-1rem)] max-w-3xl overflow-y-auto rounded-2xl p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>{selectedBooking?.bookingCode}</DialogTitle>
             <DialogDescription>Review booking details before approving, rejecting, updating, cancelling, or deleting.</DialogDescription>

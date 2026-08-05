@@ -1,0 +1,13 @@
+{
+  "name": "Riverside Terrace Admin",
+  "short_name": "RTR Admin",
+  "description": "Riverside Terrace booking and table management",
+  "start_url": "/admin-panel/booking",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#7f1d1d",
+  "icons": [
+    { "src": "/favicon.jpg", "sizes": "any", "type": "image/jpeg", "purpose": "any maskable" }
+  ]
+}

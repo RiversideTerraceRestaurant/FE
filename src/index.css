@@ -43,6 +43,16 @@ html, body {
   .home-morph { opacity: 1; transform: none; filter: none; transition: none; }
 }
 
+.admin-mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (display-mode: standalone) {
+  .admin-app-shell > header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
 .frost-panel {
   position: relative;
   background: rgba(255, 255, 255, 0.25);       /* Light translucent background */

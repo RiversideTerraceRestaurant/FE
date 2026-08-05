@@ -23,7 +23,7 @@ export default function AdminReport() {
         <h2 className="text-2xl font-semibold">Reports</h2>
         <p className="text-sm text-muted-foreground">Live booking metrics from backend data.</p>
       </div>
-      <div className="grid gap-3 rounded-md border bg-white p-4 md:grid-cols-5">
+      <div className="grid gap-3 rounded-xl border bg-white p-3 sm:p-4 md:grid-cols-5">
         <Input type="date" value={filters.startDate} onChange={(event) => setFilters({ ...filters, startDate: event.target.value })} />
         <Input type="date" value={filters.endDate} onChange={(event) => setFilters({ ...filters, endDate: event.target.value })} />
         <Select value={filters.area || "ALL"} onValueChange={(value) => setFilters({ ...filters, area: value === "ALL" ? "" : (value as RestaurantArea) })}>
@@ -73,7 +73,7 @@ function ChartCard({ title, data }: { title: string; data: { name: string; value
     <div className="rounded-md border bg-white p-4">
       <h3 className="mb-4 font-semibold">{title}</h3>
       {data.length ? (
-        <div className="h-72">
+        <div className="h-60 min-w-0 sm:h-72">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />

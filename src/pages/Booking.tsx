@@ -284,7 +284,50 @@ export default function Booking() {
       toast({ title: t("bookingVeronaLocked"), description: t("bookingVeronaMinimum"), variant: "destructive" });
       return;
     }
-    setSelectedTableIds((ids) => (ids.includes(table.id) ? ids.filter((id) => id !== table.id) : [...ids, table.id]));
+    if (selectedTableIds.includes(table.id)) {
+      const remainingTables = selectedTables.filter((item) => item.id !== table.id);
+      const remainingNumbers = remainingTables
+        .map((item) => Number(item.tableNumber.replace(/\D/g, "")))
+        .sort((a, b) => a - b);
+      const remainsAdjacent = remainingNumbers.every((number, index) => index === 0 || number === remainingNumbers[index - 1] + 1);
+      if (!remainsAdjacent) {
+        toast({ title: t("bookingFormIncomplete"), description: "Remove a table from either end of the joined group.", variant: "destructive" });
+        return;
+      }
+      setSelectedTableIds(remainingTables.map((item) => item.id));
+      return;
+    }
+    const nextTables = [...selectedTables, table];
+    const nextCapacity = nextTables.reduce((total, item) => total + item.capacity, 0);
+    if (nextTables.length > 3) {
+      toast({ title: t("bookingFormIncomplete"), description: "You can select a maximum of 3 tables.", variant: "destructive" });
+      return;
+    }
+    if (nextCapacity > 6) {
+      toast({ title: t("bookingFormIncomplete"), description: "The combined table capacity cannot exceed 6 guests.", variant: "destructive" });
+      return;
+    }
+    const numbers = nextTables
+      .map((item) => Number(item.tableNumber.replace(/\D/g, "")))
+      .sort((a, b) => a - b);
+    const adjacent = numbers.every((number, index) => index === 0 || number === numbers[index - 1] + 1);
+    if (!adjacent) {
+      toast({ title: t("bookingFormIncomplete"), description: "You can only select adjacent tables.", variant: "destructive" });
+      return;
+    }
+    if (area === "TERRACE" && numbers.includes(6) && numbers.includes(7)) {
+      toast({ title: t("bookingFormIncomplete"), description: "Tables T6 and T7 cannot be joined.", variant: "destructive" });
+      return;
+    }
+    if (area === "VERONA" && numbers.some((number) => number >= 11)) {
+      const fixedPairs = [[11, 12], [13, 14], [15, 16]];
+      const belongsToOneFixedPair = fixedPairs.some((pair) => numbers.every((number) => pair.includes(number)));
+      if (!belongsToOneFixedPair || nextTables.length > 2) {
+        toast({ title: t("bookingFormIncomplete"), description: "V11–V12, V13–V14 and V15–V16 are fixed table pairs.", variant: "destructive" });
+        return;
+      }
+    }
+    setSelectedTableIds(nextTables.map((item) => item.id));
   };
 
   const submitBooking = async (event: FormEvent) => {

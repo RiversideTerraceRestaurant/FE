@@ -1,6 +1,6 @@
 import { Circle, Group, Layer, Rect, Stage, Text } from "react-konva";
 import { Plus, Save, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,11 +23,25 @@ export default function AdminTable() {
   const [area, setArea] = useState<RestaurantArea>("TERRACE");
   const [tables, setTables] = useState<RestaurantTable[]>([]);
   const [editing, setEditing] = useState<RestaurantTable | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [mapWidth, setMapWidth] = useState(1000);
   const { toast } = useToast();
 
   useEffect(() => {
     void load();
   }, [area]);
+
+  useEffect(() => {
+    const element = mapContainerRef.current;
+    if (!element) return;
+    const updateWidth = () => setMapWidth(Math.max(1, Math.floor(element.getBoundingClientRect().width)));
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  const mapScale = Math.min(1, mapWidth / 1000);
 
   const load = async () => {
     try {
@@ -95,8 +109,9 @@ export default function AdminTable() {
         ))}
       </div>
       <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-        <section className="overflow-hidden rounded-md border bg-white p-4">
-          <Stage width={1000} height={430} scaleX={Math.min(1, Math.max(0.34, window.innerWidth / 1080))} scaleY={Math.min(1, Math.max(0.34, window.innerWidth / 1080))}>
+        <section className="overflow-hidden rounded-xl border bg-white p-2 sm:p-4">
+          <div ref={mapContainerRef} className="w-full overflow-hidden rounded-lg bg-slate-50">
+          <Stage width={mapWidth} height={430 * mapScale} scaleX={mapScale} scaleY={mapScale}>
             <Layer>
               <Rect width={1000} height={430} fill="#f8fafc" />
               {tables.map((table) => (
@@ -129,6 +144,7 @@ export default function AdminTable() {
               ))}
             </Layer>
           </Stage>
+          </div>
         </section>
         <section className="rounded-md border bg-white p-4">
           <h3 className="mb-4 font-semibold">Table details</h3>
