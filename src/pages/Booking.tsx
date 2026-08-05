@@ -407,7 +407,6 @@ export default function Booking() {
                         shadowBlur={selected ? 12 : 5}
                         shadowOffsetY={2}
                         onClick={() => toggleTable(table)}
-                        onTap={() => toggleTable(table)}
                       />
                     );
                   })}
