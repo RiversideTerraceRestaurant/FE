@@ -460,22 +460,22 @@ export default function Booking() {
         <form onSubmit={submitBooking} className="min-w-0 rounded-md border bg-white p-3 shadow-card sm:p-4">
           <h2 className="mb-4 font-semibold">{t("bookingDetails")}</h2>
           <div className="grid gap-4">
-            <Field label={t("bookingCustomerName")} id="customerName" value={form.customerName} onChange={(value) => setForm({ ...form, customerName: value })} />
-            <Field label={t("bookingEmail")} id="customerEmail" type="email" value={form.customerEmail} onChange={(value) => setForm({ ...form, customerEmail: value })} />
-            <Field label={t("bookingPhone")} id="customerPhone" value={form.customerPhone} onChange={(value) => setForm({ ...form, customerPhone: value })} />
-            <Field label={t("bookingGuests")} id="numberOfGuests" type="number" min="1" max="6" value={form.numberOfGuests} onChange={(value) => {
+            <Field label={t("bookingCustomerName")} id="customerName" placeholder="Nguyen Van A" value={form.customerName} onChange={(value) => setForm({ ...form, customerName: value })} />
+            <Field label={t("bookingEmail")} id="customerEmail" type="email" placeholder="name@example.com" value={form.customerEmail} onChange={(value) => setForm({ ...form, customerEmail: value })} />
+            <Field label={t("bookingPhone")} id="customerPhone" type="tel" placeholder="0912 345 678" value={form.customerPhone} onChange={(value) => setForm({ ...form, customerPhone: value })} />
+            <Field label={t("bookingGuests")} id="numberOfGuests" type="number" placeholder="2" min="1" max="6" value={form.numberOfGuests} onChange={(value) => {
               setForm({ ...form, numberOfGuests: value });
             }} />
             <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
               {t("bookingLargeParty")}
             </p>
             <div className="grid gap-4 sm:grid-cols-3">
-              <Field label={t("bookingDate")} id="bookingDate" type="date" min={today} value={form.bookingDate} onChange={(value) => setForm({ ...form, bookingDate: value })} />
-              <Field label={t("bookingStart")} id="startTime" type="time" value={form.startTime} onChange={(value) => setForm({ ...form, startTime: value })} />
-              <Field label={t("bookingEnd")} id="endTime" type="time" value={form.endTime} onChange={(value) => setForm({ ...form, endTime: value })} />
+              <Field label={t("bookingDate")} id="bookingDate" type="date" placeholder="YYYY-MM-DD" min={today} value={form.bookingDate} onChange={(value) => setForm({ ...form, bookingDate: value })} />
+              <Field label={t("bookingStart")} id="startTime" type="time" placeholder="HH:mm" value={form.startTime} onChange={(value) => setForm({ ...form, startTime: value })} />
+              <Field label={t("bookingEnd")} id="endTime" type="time" placeholder="HH:mm" value={form.endTime} onChange={(value) => setForm({ ...form, endTime: value })} />
             </div>
             <div>
-              <Label>{t("bookingSelectedTables")}</Label>
+              <Label>{t("bookingSelectedTables")} <RequiredMark /></Label>
               <div className="mt-2 rounded-md border bg-muted/40 px-3 py-3 text-sm">
                 {selectedTables.length
                   ? `${selectedTables.map((table) => table.tableNumber).join(", ")} · ${selectedCapacity} ${t("bookingSeats")}`
@@ -501,7 +501,7 @@ export default function Booking() {
                 }}
               />
               <Label htmlFor="informationConfirmed" className={`cursor-pointer text-sm leading-5 ${confirmationError ? "text-destructive" : ""}`}>
-                {t("bookingConfirmationLabel")}
+                {t("bookingConfirmationLabel")} <RequiredMark />
               </Label>
             </div>
             <Button type="submit" disabled={submitting || selectedTables.length === 0}>
@@ -546,14 +546,14 @@ export default function Booking() {
         >
           <DialogHeader><DialogTitle>{t("bookingSuggestBest")}</DialogTitle></DialogHeader>
           <div className="grid gap-4">
-            <Field label={t("bookingGuests")} id="suggestGuests" type="number" min="1" max="6" value={suggestForm.numberOfGuests} onChange={(value) => setSuggestForm({ ...suggestForm, numberOfGuests: value })} />
-            <Field label={t("bookingDate")} id="suggestDate" type="date" min={today} value={suggestForm.bookingDate} onChange={(value) => setSuggestForm({ ...suggestForm, bookingDate: value })} />
+            <Field label={t("bookingGuests")} id="suggestGuests" type="number" placeholder="2" min="1" max="6" value={suggestForm.numberOfGuests} onChange={(value) => setSuggestForm({ ...suggestForm, numberOfGuests: value })} />
+            <Field label={t("bookingDate")} id="suggestDate" type="date" placeholder="YYYY-MM-DD" min={today} value={suggestForm.bookingDate} onChange={(value) => setSuggestForm({ ...suggestForm, bookingDate: value })} />
             <div className="grid grid-cols-2 gap-4">
-              <Field label={t("bookingStart")} id="suggestStart" type="time" value={suggestForm.startTime} onChange={(value) => setSuggestForm({ ...suggestForm, startTime: value })} />
-              <Field label={t("bookingEnd")} id="suggestEnd" type="time" value={suggestForm.endTime} onChange={(value) => setSuggestForm({ ...suggestForm, endTime: value })} />
+              <Field label={t("bookingStart")} id="suggestStart" type="time" placeholder="HH:mm" value={suggestForm.startTime} onChange={(value) => setSuggestForm({ ...suggestForm, startTime: value })} />
+              <Field label={t("bookingEnd")} id="suggestEnd" type="time" placeholder="HH:mm" value={suggestForm.endTime} onChange={(value) => setSuggestForm({ ...suggestForm, endTime: value })} />
             </div>
             <div>
-              <Label>{t("bookingSeating")}</Label>
+              <Label>{t("bookingSeating")} <RequiredMark /></Label>
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <Button className="rounded-xl" type="button" variant={suggestForm.seating === "outside" ? "default" : "outline"} onClick={() => setSuggestForm({ ...suggestForm, seating: "outside" })}>{t("bookingOutside")}</Button>
                 <Button className="rounded-xl" type="button" variant={suggestForm.seating === "inside" ? "default" : "outline"} onClick={() => setSuggestForm({ ...suggestForm, seating: "inside" })}>{t("bookingInside")}</Button>
@@ -574,7 +574,10 @@ export default function Booking() {
             <DialogTitle>{t("bookingVerifyEmail")}</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">{t("bookingOtpInstruction")} {otpSession?.email}. {t("bookingOtpExpires")}</p>
-          <Input value={otp} onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" maxLength={6} placeholder="123456" />
+          <div>
+            <Label htmlFor="bookingOtp">OTP <RequiredMark /></Label>
+            <Input id="bookingOtp" value={otp} onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))} inputMode="numeric" maxLength={6} placeholder="123456" required />
+          </div>
           <div className="flex gap-2">
             <Button onClick={verifyOtp} disabled={otp.length !== 6 || submitting}>{t("bookingVerifyOtp")}</Button>
             <Button type="button" variant="outline" onClick={resendOtp}>{t("bookingResendOtp")}</Button>
@@ -613,6 +616,7 @@ function Field({
   value,
   onChange,
   type = "text",
+  placeholder,
   min,
   max,
 }: {
@@ -621,13 +625,18 @@ function Field({
   value: string;
   onChange: (value: string) => void;
   type?: string;
+  placeholder?: string;
   min?: string;
   max?: string;
 }) {
   return (
     <div>
-      <Label htmlFor={id}>{label}</Label>
-      <Input className="h-11 rounded-xl" id={id} type={type} min={min} max={max} value={value} onChange={(event) => onChange(event.target.value)} required />
+      <Label htmlFor={id}>{label} <RequiredMark /></Label>
+      <Input className="h-11 rounded-xl" id={id} type={type} placeholder={placeholder} min={min} max={max} value={value} onChange={(event) => onChange(event.target.value)} required />
     </div>
   );
+}
+
+function RequiredMark() {
+  return <span className="text-destructive" aria-hidden="true">*</span>;
 }
