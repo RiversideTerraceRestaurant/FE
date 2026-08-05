@@ -384,7 +384,7 @@ export default function Booking() {
             <div ref={canvasContainerRef} className="table-map-touch block w-full min-w-0 overflow-hidden">
               <Stage preventDefault={false} width={stageWidth} height={stageHeight} scaleX={stageScale} scaleY={stageScale}>
                 <Layer>
-                  <Rect x={0} y={0} width={canvasWidth} height={canvasHeight} fill="#f8fafc" />
+                  <Rect preventDefault={false} x={0} y={0} width={canvasWidth} height={canvasHeight} fill="#f8fafc" />
                   {canvasTables.map((table) => {
                     const selected = selectedTableIds.includes(table.id);
                     const disabled = table.status !== "AVAILABLE" || (area === "VERONA" && guestCount < 3);
@@ -393,6 +393,7 @@ export default function Booking() {
                     return (
                       <Rect
                         key={`${table.id}-hitbox`}
+                        preventDefault={false}
                         x={x}
                         y={y}
                         width={tableWidth}

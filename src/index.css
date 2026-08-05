@@ -10,6 +10,7 @@ html, body {
 }
 
 .table-map-touch,
+.table-map-touch .konvajs-content,
 .table-map-touch canvas {
   touch-action: pan-y !important;
   overscroll-behavior-x: none;
