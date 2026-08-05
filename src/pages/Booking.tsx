@@ -7,6 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { useToast } from "@/hooks/use-toast";
 import { AREAS, ApiError, publicApi } from "@/services/api";
 import { Booking as BookingResult, RequestOtpResponse, RestaurantArea, RestaurantTable, TableStatus } from "@/types/booking";
@@ -28,6 +35,24 @@ const statusLabelKey: Record<TableStatus, string> = {
   MAINTENANCE: "statusMaintenance",
 };
 
+const AREA_PHOTOS: Record<"Terrace" | "Roma" | "Verona" | "Sorrento", string[]> = {
+  Terrace: [
+    "https://res.cloudinary.com/dbp8ozwty/image/upload/v1785913184/1785913125371_2976993659909696112_2976993659909696112_dc9f7e643d7aa8fca2ba8a1990f75bac_tzi6r4.jpg"
+  ],
+  Roma: [
+    "https://res.cloudinary.com/dbp8ozwty/image/upload/v1785913197/1785913125358_2976993659909696112_2976993659909696112_16bb78ae933b37d2a8c62c0bdc79cc1b_r2p3vn.jpg",
+    "https://res.cloudinary.com/dbp8ozwty/image/upload/v1785913191/1785913125374_2976993659909696112_2976993659909696112_893548295dbb0c822299d59d5b0569d8_uit7jx.jpg",
+  ],
+  Verona: [
+    "https://res.cloudinary.com/dbp8ozwty/image/upload/v1785913149/1785913125363_2976993659909696112_2976993659909696112_2acf2992b81e92b34446f72cfa00e543_ujjjcp.jpg",
+    "https://res.cloudinary.com/dbp8ozwty/image/upload/v1785913176/1785913125367_2976993659909696112_2976993659909696112_61906ec42eff345efd93a6f688cce447_tygl04.jpg",
+  ],
+  Sorrento: [
+    "https://res.cloudinary.com/dbp8ozwty/image/upload/v1785913168/1785913125352_2976993659909696112_2976993659909696112_12b220b0bfb51f9efe29db6bdc2234ae_hkacaz.jpg",
+    "https://res.cloudinary.com/dbp8ozwty/image/upload/v1785913163/1785913125336_2976993659909696112_2976993659909696112_c4c39213aa088ed11c0d60a76b9f2e2a_malft1.jpg",
+  ],
+};
+
 const toDateInputValue = (date: Date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -45,7 +70,6 @@ export default function Booking() {
   const [showPhotos, setShowPhotos] = useState(false);
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [suggesting, setSuggesting] = useState(false);
-  const [areaImages, setAreaImages] = useState<string[]>([]);
   const [otpSession, setOtpSession] = useState<RequestOtpResponse | null>(null);
   const [otp, setOtp] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -58,6 +82,8 @@ export default function Booking() {
   const [canvasContainerWidth, setCanvasContainerWidth] = useState(520);
   const { toast } = useToast();
   const { t } = useLanguage();
+  const areaName = AREAS.find((item) => item.value === area)?.label as keyof typeof AREA_PHOTOS;
+  const areaImages = AREA_PHOTOS[areaName] ?? [];
 
   const [form, setForm] = useState({
     customerName: "",
@@ -157,7 +183,6 @@ export default function Booking() {
   useEffect(() => {
     setSelectedTableIds([]);
     void loadTables({ clear: true });
-    void loadImages();
   }, [area, form.bookingDate, form.startTime, form.endTime, form.numberOfGuests]);
 
   useEffect(() => {
@@ -252,15 +277,6 @@ export default function Booking() {
       toast({ title: t("bookingSuggestionFailed"), description: error instanceof Error ? error.message : t("bookingSuggestionNone"), variant: "destructive" });
     } finally {
       setSuggesting(false);
-    }
-  };
-
-  const loadImages = async () => {
-    try {
-      const data = await publicApi.areaImages(area);
-      setAreaImages(data.images);
-    } catch {
-      setAreaImages([]);
     }
   };
 
@@ -381,9 +397,9 @@ export default function Booking() {
               {t("bookingRefresh")}
             </Button>
           </div>
-          <div className="w-full min-w-0 overflow-hidden rounded-md border bg-muted/30">
-            <div ref={canvasContainerRef} className="block w-full min-w-0 overflow-hidden">
-              <Stage width={stageWidth} height={stageHeight} scaleX={stageScale} scaleY={stageScale}>
+          <div className="w-full min-w-0 overflow-hidden rounded-2xl border bg-muted/30">
+            <div ref={canvasContainerRef} className="table-map-touch block w-full min-w-0 overflow-hidden">
+              <Stage preventDefault={false} width={stageWidth} height={stageHeight} scaleX={stageScale} scaleY={stageScale}>
                 <Layer>
                   <Rect x={0} y={0} width={canvasWidth} height={canvasHeight} fill="#f8fafc" />
                   {canvasTables.map((table) => {
@@ -488,7 +504,7 @@ export default function Booking() {
             )}
             <div>
               <Label htmlFor="note">{t("bookingNotes")}</Label>
-              <Textarea id="note" value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} placeholder={t("bookingOptional")} />
+              <Textarea className="rounded-xl" id="note" value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} placeholder={t("bookingOptional")} />
             </div>
             <div className={`flex items-start gap-3 rounded-md border p-3 transition-colors ${confirmationError ? "border-destructive bg-destructive/5 ring-1 ring-destructive" : "border-border"}`}>
               <Checkbox
@@ -514,20 +530,37 @@ export default function Booking() {
       </div>
 
       <Dialog open={showPhotos} onOpenChange={setShowPhotos}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl overflow-hidden">
           <DialogHeader>
-            <DialogTitle>{AREAS.find((item) => item.value === area)?.label} {t("bookingPhotos")}</DialogTitle>
+            <DialogTitle>{areaName} {t("bookingPhotos")}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {(areaImages.length ? areaImages : ["/placeholder.svg"]).map((src) => (
-              <img key={src} src={src} alt={`${area} dining area`} className="aspect-[4/3] w-full rounded-md object-cover" />
-            ))}
-          </div>
+          <Carousel key={area} opts={{ loop: areaImages.length > 1 }} className="mx-auto w-full">
+            <CarouselContent>
+              {(areaImages.length ? areaImages : ["/placeholder.svg"]).map((src, index) => (
+                <CarouselItem key={`${src}-${index}`}>
+                  <img
+                    src={src}
+                    alt={`${areaName} dining area ${index + 1}`}
+                    className="aspect-[4/3] w-full rounded-md object-cover"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {areaImages.length > 1 && (
+              <>
+                <CarouselPrevious className="left-3 bg-white/90 shadow-md" />
+                <CarouselNext className="right-3 bg-white/90 shadow-md" />
+              </>
+            )}
+          </Carousel>
         </DialogContent>
       </Dialog>
 
       <Dialog open={showSuggestion} onOpenChange={setShowSuggestion}>
-        <DialogContent>
+        <DialogContent
+          className="rounded-3xl border-white/70 bg-white/95 shadow-2xl backdrop-blur-xl sm:rounded-3xl"
+          onOpenAutoFocus={(event) => event.preventDefault()}
+        >
           <DialogHeader><DialogTitle>{t("bookingSuggestBest")}</DialogTitle></DialogHeader>
           <div className="grid gap-4">
             <Field label={t("bookingGuests")} id="suggestGuests" type="number" min="1" max="6" value={suggestForm.numberOfGuests} onChange={(value) => setSuggestForm({ ...suggestForm, numberOfGuests: value })} />
@@ -539,12 +572,12 @@ export default function Booking() {
             <div>
               <Label>{t("bookingSeating")}</Label>
               <div className="mt-2 grid grid-cols-2 gap-2">
-                <Button type="button" variant={suggestForm.seating === "outside" ? "default" : "outline"} onClick={() => setSuggestForm({ ...suggestForm, seating: "outside" })}>{t("bookingOutside")}</Button>
-                <Button type="button" variant={suggestForm.seating === "inside" ? "default" : "outline"} onClick={() => setSuggestForm({ ...suggestForm, seating: "inside" })}>{t("bookingInside")}</Button>
+                <Button className="rounded-xl" type="button" variant={suggestForm.seating === "outside" ? "default" : "outline"} onClick={() => setSuggestForm({ ...suggestForm, seating: "outside" })}>{t("bookingOutside")}</Button>
+                <Button className="rounded-xl" type="button" variant={suggestForm.seating === "inside" ? "default" : "outline"} onClick={() => setSuggestForm({ ...suggestForm, seating: "inside" })}>{t("bookingInside")}</Button>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">{suggestForm.seating === "outside" ? t("bookingOutsideHint") : t("bookingInsideHint")}</p>
             </div>
-            <Button type="button" onClick={suggestBestTable} disabled={suggesting}>
+            <Button className="h-11 rounded-xl" type="button" onClick={suggestBestTable} disabled={suggesting}>
               {suggesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               {t("bookingFindSuggestion")}
             </Button>
@@ -611,7 +644,7 @@ function Field({
   return (
     <div>
       <Label htmlFor={id}>{label}</Label>
-      <Input id={id} type={type} min={min} max={max} value={value} onChange={(event) => onChange(event.target.value)} required />
+      <Input className="h-11 rounded-xl" id={id} type={type} min={min} max={max} value={value} onChange={(event) => onChange(event.target.value)} required />
     </div>
   );
 }

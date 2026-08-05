@@ -9,6 +9,39 @@ html, body {
   background: transparent !important;
 }
 
+.table-map-touch,
+.table-map-touch canvas {
+  touch-action: pan-y !important;
+  overscroll-behavior-x: none;
+}
+
+.liquid-glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.28));
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow: 0 24px 70px rgba(74, 35, 20, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+
+.home-morph {
+  opacity: 0;
+  transform: translateY(54px) scale(0.94);
+  filter: blur(8px);
+  border-radius: 3rem;
+  transition: opacity 800ms ease, transform 900ms cubic-bezier(.2,.8,.2,1), filter 800ms ease, border-radius 900ms ease;
+}
+
+.home-morph.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  border-radius: 1.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-morph { opacity: 1; transform: none; filter: none; transition: none; }
+}
+
 .frost-panel {
   position: relative;
   background: rgba(255, 255, 255, 0.25);       /* Light translucent background */
