@@ -25,10 +25,10 @@ html, body {
 
 .home-morph {
   opacity: 0;
-  transform: translateY(54px) scale(0.94);
-  filter: blur(8px);
-  border-radius: 3rem;
-  transition: opacity 800ms ease, transform 900ms cubic-bezier(.2,.8,.2,1), filter 800ms ease, border-radius 900ms ease;
+  transform: translateY(36px) scale(0.97);
+  filter: blur(3px);
+  border-radius: 2.4rem;
+  transition: opacity 700ms ease, transform 800ms cubic-bezier(.2,.8,.2,1), filter 600ms ease, border-radius 800ms ease;
 }
 
 .home-morph.is-visible {

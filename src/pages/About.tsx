@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function About() {
-  const mapsUrl = "https://maps.app.goo.gl/b1vvGpNApSCNE4Xz8";
+  const mapsUrl = "https://maps.app.goo.gl/UQ64H1smLtqcHJCV6";
   const { t } = useLanguage();
   return (
     <div className="bg-background">
