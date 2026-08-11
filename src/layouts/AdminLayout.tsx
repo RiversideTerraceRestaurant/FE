@@ -26,17 +26,14 @@ export function AdminLayout() {
             <h1 className="text-base font-semibold sm:text-xl">Riverside Terrace Admin</h1>
             <p className="hidden text-sm text-muted-foreground sm:block">Booking, table and report management</p>
           </div>
-          <div className="ml-auto flex items-center gap-2 md:ml-0">
-            <PushNotificationButton />
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-9 w-9 shrink-0 rounded-full md:hidden"
-              aria-label="Logout"
-              onClick={() => { adminAuth.logout(); navigate("/admin-panel/login"); }}
-            ><LogOut className="h-4 w-4" /></Button>
-          </div>
-          <nav className="admin-mobile-nav fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t bg-white/95 px-2 backdrop-blur-xl md:static md:flex md:w-auto md:gap-2 md:border-0 md:bg-transparent md:p-0">
+          <Button
+            variant="outline"
+            size="icon"
+            className="ml-auto h-9 w-9 shrink-0 rounded-full md:hidden"
+            aria-label="Logout"
+            onClick={() => { adminAuth.logout(); navigate("/admin-panel/login"); }}
+          ><LogOut className="h-4 w-4" /></Button>
+          <nav className="admin-mobile-nav fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t bg-white/95 px-2 backdrop-blur-xl md:static md:flex md:w-auto md:gap-2 md:border-0 md:bg-transparent md:p-0">
             {links.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}
@@ -51,6 +48,7 @@ export function AdminLayout() {
                 <span className="truncate">{label}</span>
               </NavLink>
             ))}
+            <PushNotificationButton />
             <Button
               variant="outline"
               className="hidden h-10 min-w-0 px-1 text-xs md:inline-flex md:shrink-0 md:px-3 md:text-sm"

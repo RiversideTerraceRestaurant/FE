@@ -62,8 +62,15 @@ export function PushNotificationButton() {
   };
 
   return (
-    <Button variant="outline" size="icon" className="h-9 w-9 shrink-0 rounded-full" onClick={toggle} disabled={busy} aria-label={subscribed ? "Turn off notifications" : "Turn on notifications"}>
+    <Button
+      variant={subscribed ? "default" : "ghost"}
+      className="h-auto min-w-0 flex-col gap-1 rounded-xl px-1 py-2 text-[10px] font-medium md:h-10 md:flex-row md:gap-2 md:border md:border-input md:bg-background md:px-3 md:py-0 md:text-sm md:text-foreground md:hover:bg-accent"
+      onClick={toggle}
+      disabled={busy}
+      aria-label={subscribed ? "Turn off notifications" : "Turn on notifications"}
+    >
       {subscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+      <span>{busy ? "Loading" : subscribed ? "Alerts on" : "Alerts"}</span>
     </Button>
   );
 }
