@@ -30,7 +30,7 @@ export function useBookingRealtime(onChange: () => void) {
       events.onerror = () => {
         events?.close();
         events = undefined;
-        retry = window.setTimeout(connectWebSocket, 3000);
+        retry = window.setTimeout(API_BASE_URL.startsWith("/") ? connectSse : connectWebSocket, 3000);
       };
     };
 
@@ -49,7 +49,11 @@ export function useBookingRealtime(onChange: () => void) {
       }
     };
 
-    connectWebSocket();
+    // The production frontend reaches Elastic Beanstalk through a Vercel rewrite.
+    // That proxy currently returns HTTP 400 for WebSocket upgrade requests, so use
+    // the streaming realtime endpoint there. Direct deployments still use WebSocket.
+    if (API_BASE_URL.startsWith("/")) connectSse();
+    else connectWebSocket();
     return () => {
       stopped = true;
       if (retry) window.clearTimeout(retry);
