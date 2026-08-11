@@ -177,11 +177,12 @@ export const publicApi = {
 };
 
 export const adminApi = {
-	pushConfig: () => request<{ enabled: boolean; publicKey: string }>("/api/admin/push/config", {}, true),
+	pushConfig: () => request<{ enabled: boolean; publicKey: string; subscriptionCount: number }>("/api/admin/push/config", {}, true),
 	subscribePush: (subscription: PushSubscriptionJSON) =>
 		request<void>("/api/admin/push/subscriptions", { method: "POST", body: JSON.stringify(subscription) }, true),
 	unsubscribePush: (endpoint: string) =>
 		request<void>("/api/admin/push/subscriptions", { method: "DELETE", body: JSON.stringify({ endpoint }) }, true),
+	testPush: () => request<{ registered: number; accepted: number }>("/api/admin/push/test", { method: "POST" }, true),
   bookings: (params: Record<string, string> = {}) => {
     const search = new URLSearchParams(Object.entries(params).filter(([, value]) => value));
     return request<Booking[]>(`/api/admin/bookings${search.size ? `?${search.toString()}` : ""}`, {}, true);

@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { AREAS, BOOKING_STATUSES, adminApi } from "@/services/api";
 import { Booking, BookingStatus, RestaurantArea, RestaurantTable } from "@/types/booking";
+import { useBookingRealtime } from "@/hooks/use-booking-realtime";
 
 type BookingDraft = {
   customerName: string;
@@ -54,6 +55,8 @@ export default function AdminBooking() {
       setLoading(false);
     }
   };
+
+  useBookingRealtime(() => { void load(); });
 
   const openBooking = (booking: Booking) => {
     setSelectedBooking(booking);

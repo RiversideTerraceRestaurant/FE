@@ -42,10 +42,10 @@ export function PushNotificationButton() {
       const registration = await navigator.serviceWorker.ready;
       const current = await registration.pushManager.getSubscription();
       if (current) {
-        await adminApi.unsubscribePush(current.endpoint);
-        await current.unsubscribe();
-        setSubscribed(false);
-        toast({ title: "Notifications turned off" });
+        const result = await adminApi.testPush();
+        if (result.registered === 0) throw new Error("The server has no registered devices. Turn notifications off in iPhone Settings, reload the app, then enable them again.");
+        if (result.accepted === 0) throw new Error("Apple's push server rejected the notification. Check the backend logs and VAPID keys.");
+        toast({ title: "Test notification sent", description: "It should appear on this device within a few seconds." });
         return;
       }
       const config = await adminApi.pushConfig();
@@ -55,7 +55,8 @@ export function PushNotificationButton() {
       const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: base64UrlToUint8Array(config.publicKey) });
       await adminApi.subscribePush(subscription.toJSON());
       setSubscribed(true);
-      toast({ title: "Notifications are on", description: "This device will be notified when a customer confirms a new booking." });
+      await adminApi.testPush();
+      toast({ title: "Notifications are on", description: "A test notification was sent. New confirmed customer bookings will also notify this device." });
     } catch (error) {
       toast({ title: "Could not enable notifications", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
     } finally { setBusy(false); }
@@ -67,10 +68,10 @@ export function PushNotificationButton() {
       className="h-auto min-w-0 flex-col gap-1 rounded-xl px-1 py-2 text-[10px] font-medium md:h-10 md:flex-row md:gap-2 md:border md:border-input md:bg-background md:px-3 md:py-0 md:text-sm md:text-foreground md:hover:bg-accent"
       onClick={toggle}
       disabled={busy}
-      aria-label={subscribed ? "Turn off notifications" : "Turn on notifications"}
+      aria-label={subscribed ? "Send a test notification" : "Turn on notifications"}
     >
       {subscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
-      <span>{busy ? "Loading" : subscribed ? "Alerts on" : "Alerts"}</span>
+      <span>{busy ? "Loading" : subscribed ? "Test alert" : "Alerts"}</span>
     </Button>
   );
 }

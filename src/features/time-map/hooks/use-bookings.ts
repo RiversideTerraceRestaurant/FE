@@ -3,6 +3,7 @@ import { adminApi, publicApi } from "@/services/api";
 import { Booking, hasConflict } from "@/features/time-map/lib/booking-data";
 import { Booking as BackendBooking, BookingStatus, RestaurantArea } from "@/types/booking";
 import { toast } from "sonner";
+import { useBookingRealtime } from "@/hooks/use-booking-realtime";
 
 export interface DeletedBooking extends Booking {
   deleted_at: string;
@@ -92,13 +93,15 @@ export function useBookings(tableIdByName: Record<string, number> = {}, readOnly
 
     window.addEventListener("rtr-bookings-changed", handleBookingsChanged);
     window.addEventListener("storage", handleStorage);
-    const interval = window.setInterval(handleBookingsChanged, 15000);
+    const interval = window.setInterval(handleBookingsChanged, 60000);
     return () => {
       window.removeEventListener("rtr-bookings-changed", handleBookingsChanged);
       window.removeEventListener("storage", handleStorage);
       window.clearInterval(interval);
     };
   }, [fetchBookings]);
+
+  useBookingRealtime(() => { void fetchBookings(); });
 
   const getBookingsForDate = useCallback(
     (date: string) => bookings.filter((booking) => booking.date === date),
