@@ -2,6 +2,7 @@ import { BarChart3, CalendarCheck, Clock3, LogOut, Table2 } from "lucide-react";
 import { NavLink, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { adminAuth } from "@/services/api";
 import { Button } from "@/components/ui/button";
+import { PushNotificationButton } from "@/components/PushNotificationButton";
 
 const links = [
   { to: "/admin-panel/booking", label: "Booking", icon: CalendarCheck },
@@ -25,13 +26,16 @@ export function AdminLayout() {
             <h1 className="text-base font-semibold sm:text-xl">Riverside Terrace Admin</h1>
             <p className="hidden text-sm text-muted-foreground sm:block">Booking, table and report management</p>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-9 w-9 shrink-0 rounded-full md:hidden"
-            aria-label="Logout"
-            onClick={() => { adminAuth.logout(); navigate("/admin-panel/login"); }}
-          ><LogOut className="h-4 w-4" /></Button>
+          <div className="ml-auto flex items-center gap-2 md:ml-0">
+            <PushNotificationButton />
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-9 w-9 shrink-0 rounded-full md:hidden"
+              aria-label="Logout"
+              onClick={() => { adminAuth.logout(); navigate("/admin-panel/login"); }}
+            ><LogOut className="h-4 w-4" /></Button>
+          </div>
           <nav className="admin-mobile-nav fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t bg-white/95 px-2 backdrop-blur-xl md:static md:flex md:w-auto md:gap-2 md:border-0 md:bg-transparent md:p-0">
             {links.map(({ to, label, icon: Icon }) => (
               <NavLink
