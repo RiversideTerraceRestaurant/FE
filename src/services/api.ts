@@ -35,7 +35,7 @@ export class ApiError extends Error {
 
 async function request<T>(path: string, options: RequestInit = {}, admin = false): Promise<T> {
   const headers = new Headers(options.headers);
-  if (options.body) {
+  if (options.body && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
   if (IS_NGROK_API) {
@@ -188,6 +188,7 @@ export const adminApi = {
 	createMenuItem: (value: Omit<MenuItem, "id">) => request<MenuItem>("/api/admin/menu/items", { method: "POST", body: JSON.stringify(menuItemPayload(value)) }, true).then(normalizeMenuItem),
 	updateMenuItem: (value: MenuItem) => request<MenuItem>(`/api/admin/menu/items/${value.id}`, { method: "PUT", body: JSON.stringify(menuItemPayload(value)) }, true).then(normalizeMenuItem),
 	deleteMenuItem: (id: string) => request<void>(`/api/admin/menu/items/${id}`, { method: "DELETE" }, true),
+	uploadMenuImage: (file: File) => { const body = new FormData(); body.append("file", file); return request<{ url: string }>("/api/admin/menu/images", { method: "POST", body }, true); },
 	pushConfig: () => request<{ enabled: boolean; publicKey: string; subscriptionCount: number }>("/api/admin/push/config", {}, true),
 	subscribePush: (subscription: PushSubscriptionJSON) =>
 		request<void>("/api/admin/push/subscriptions", { method: "POST", body: JSON.stringify(subscription) }, true),
