@@ -8,12 +8,11 @@ import Menu from "./pages/Menu";
 import Home from "./pages/Home";
 import Booking from "./pages/Booking";
 import About from "./pages/About";
-import Auth from "./pages/Auth";
-import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import AdminBooking from "./pages/admin/AdminBooking";
 import AdminTable from "./pages/admin/AdminTable";
 import AdminReport from "./pages/admin/AdminReport";
+import AdminMenu from "./pages/admin/AdminMenu";
 import TimeMapIndex from "./features/time-map/pages/Index";
 import { AuthProvider as TimeMapAuthProvider } from "./features/time-map/hooks/use-auth";
 import { PublicLayout } from "./layouts/PublicLayout";
@@ -37,8 +36,6 @@ const App = () => (
               <Route path="/menu" element={<Menu />} />
               <Route path="/about" element={<About />} />
             </Route>
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<Admin />} />
             <Route path="/menu-only" element={<Menu />} />
             <Route
               path="/guest/timemap"
@@ -54,6 +51,7 @@ const App = () => (
               <Route path="/admin-panel/booking" element={<AdminBooking />} />
               <Route path="/admin-panel/table" element={<AdminTable />} />
               <Route path="/admin-panel/report" element={<AdminReport />} />
+              <Route path="/admin-panel/menu" element={<AdminMenu />} />
               <Route
                 path="/admin-panel/time-map"
                 element={(

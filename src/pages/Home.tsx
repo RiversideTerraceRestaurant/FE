@@ -1,7 +1,7 @@
 import { ArrowRight, CalendarCheck, ChevronDown, UtensilsCrossed } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { publicApi } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -25,12 +25,7 @@ export default function Home() {
   const { t } = useLanguage();
 
   useEffect(() => {
-    supabase
-      .from("menu_items")
-      .select("*")
-      .order("price", { ascending: false, nullsFirst: false })
-      .limit(5)
-      .then(({ data }) => setItems(data || []));
+    publicApi.menuItems().then((data) => setItems(data.sort((a, b) => b.price - a.price).slice(0, 5))).catch(() => setItems([]));
   }, []);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { BarChart3, CalendarCheck, Clock3, LogOut, Table2 } from "lucide-react";
+import { BarChart3, CalendarCheck, Clock3, LogOut, Table2, UtensilsCrossed } from "lucide-react";
 import { NavLink, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { adminAuth } from "@/services/api";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ const links = [
   { to: "/admin-panel/table", label: "Table", icon: Table2 },
   { to: "/admin-panel/report", label: "Report", icon: BarChart3 },
   { to: "/admin-panel/time-map", label: "Time Map", icon: Clock3 },
+  { to: "/admin-panel/menu", label: "Menu", icon: UtensilsCrossed },
 ];
 
 export function AdminLayout() {
@@ -33,7 +34,7 @@ export function AdminLayout() {
             aria-label="Logout"
             onClick={() => { adminAuth.logout(); navigate("/admin-panel/login"); }}
           ><LogOut className="h-4 w-4" /></Button>
-          <nav className="admin-mobile-nav fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t bg-white/95 px-2 backdrop-blur-xl md:static md:flex md:w-auto md:gap-2 md:border-0 md:bg-transparent md:p-0">
+          <nav className="admin-mobile-nav fixed inset-x-0 bottom-0 z-50 grid grid-cols-6 border-t bg-white/95 px-1 backdrop-blur-xl md:static md:flex md:w-auto md:gap-1 md:border-0 md:bg-transparent md:p-0">
             {links.map(({ to, label, icon: Icon }) => (
               <NavLink
                 key={to}

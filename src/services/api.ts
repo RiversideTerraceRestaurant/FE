@@ -8,6 +8,7 @@ import {
   RestaurantTable,
   TableSuggestion,
 } from "@/types/booking";
+import { Category, MenuItem } from "@/type/type";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
 const IS_NGROK_API = API_BASE_URL.includes(".ngrok-free.dev");
@@ -122,6 +123,8 @@ export const adminAuth = {
 };
 
 export const publicApi = {
+	menuCategories: () => request<Category[]>("/api/public/menu/categories").then((values) => values.map(normalizeCategory)),
+	menuItems: () => request<MenuItem[]>("/api/public/menu/items").then((values) => values.map(normalizeMenuItem)),
   tables: () => request<RestaurantTable[]>("/api/public/tables"),
   tablesByArea: (area: RestaurantArea) => request<RestaurantTable[]>(`/api/public/tables/areas/${area}`),
   timeMapBookings: (params: Record<string, string> = {}) => {
@@ -177,6 +180,14 @@ export const publicApi = {
 };
 
 export const adminApi = {
+	menuCategories: () => request<Category[]>("/api/admin/menu/categories", {}, true).then((values) => values.map(normalizeCategory)),
+	menuItems: () => request<MenuItem[]>("/api/admin/menu/items", {}, true).then((values) => values.map(normalizeMenuItem)),
+	createMenuCategory: (value: Omit<Category, "id">) => request<Category>("/api/admin/menu/categories", { method: "POST", body: JSON.stringify(categoryPayload(value)) }, true).then(normalizeCategory),
+	updateMenuCategory: (value: Category) => request<Category>(`/api/admin/menu/categories/${value.id}`, { method: "PUT", body: JSON.stringify(categoryPayload(value)) }, true).then(normalizeCategory),
+	deleteMenuCategory: (id: string) => request<void>(`/api/admin/menu/categories/${id}`, { method: "DELETE" }, true),
+	createMenuItem: (value: Omit<MenuItem, "id">) => request<MenuItem>("/api/admin/menu/items", { method: "POST", body: JSON.stringify(menuItemPayload(value)) }, true).then(normalizeMenuItem),
+	updateMenuItem: (value: MenuItem) => request<MenuItem>(`/api/admin/menu/items/${value.id}`, { method: "PUT", body: JSON.stringify(menuItemPayload(value)) }, true).then(normalizeMenuItem),
+	deleteMenuItem: (id: string) => request<void>(`/api/admin/menu/items/${id}`, { method: "DELETE" }, true),
 	pushConfig: () => request<{ enabled: boolean; publicKey: string; subscriptionCount: number }>("/api/admin/push/config", {}, true),
 	subscribePush: (subscription: PushSubscriptionJSON) =>
 		request<void>("/api/admin/push/subscriptions", { method: "POST", body: JSON.stringify(subscription) }, true),
@@ -265,6 +276,11 @@ export const adminApi = {
     return request<ReportSummary>(`/api/admin/reports/summary${search.size ? `?${search.toString()}` : ""}`, {}, true);
   },
 };
+
+function normalizeCategory(value: any): Category { return { id: String(value.id), name: value.name, display_name: value.displayName ?? value.display_name, display_order: value.displayOrder ?? value.display_order, is_active: value.active ?? value.is_active }; }
+function normalizeMenuItem(value: any): MenuItem { return { id:String(value.id),name:value.name,description:value.description,description_ko:value.descriptionKo??value.description_ko,description_ja:value.descriptionJa??value.description_ja,description_cn:value.descriptionCn??value.description_cn,description_vi:value.descriptionVi??value.description_vi,description_ru:value.descriptionRu??value.description_ru,description_kz:value.descriptionKz??value.description_kz,description_es:value.descriptionEs??value.description_es,description_fr:value.descriptionFr??value.description_fr,description_it:value.descriptionIt??value.description_it,price:Number(value.price),vat:Number(value.vat),category_id:value.categoryId==null?null:String(value.categoryId),image_url:value.imageUrl??value.image_url,active:value.active,display_order:value.displayOrder??value.display_order??0 }; }
+function categoryPayload(value: Omit<Category,"id">|Category){return{name:value.name,displayName:value.display_name,displayOrder:value.display_order,active:value.is_active};}
+function menuItemPayload(value: Omit<MenuItem,"id">|MenuItem){return{name:value.name,description:value.description,descriptionKo:value.description_ko,descriptionJa:value.description_ja,descriptionCn:value.description_cn,descriptionVi:value.description_vi,descriptionRu:value.description_ru,descriptionKz:value.description_kz,descriptionEs:value.description_es,descriptionFr:value.description_fr,descriptionIt:value.description_it,price:value.price,vat:value.vat,categoryId:value.category_id?Number(value.category_id):null,imageUrl:value.image_url,active:value.active??true,displayOrder:value.display_order??0};}
 
 export const AREAS: { value: RestaurantArea; label: string }[] = [
   { value: "TERRACE", label: "Terrace" },

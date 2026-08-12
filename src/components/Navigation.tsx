@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { User, LogOut } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { User } from "lucide-react";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -17,31 +14,8 @@ const navItems = [
 ];
 
 export const Navigation = () => {
-  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { t } = useLanguage();
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    toast({
-      title: t("navLoggedOut"),
-      description: t("navLoggedOutDescription"),
-    });
-    navigate("/home");
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 shadow-sm backdrop-blur-sm animate-slide-down">
@@ -64,40 +38,14 @@ export const Navigation = () => {
 
           <div className="flex shrink-0 items-center gap-2">
             <LanguageSelector />
-            {user ? (
-              <>
-                <div className="hidden items-center gap-2 text-sm text-muted-foreground lg:flex">
-                  <User className="w-4 h-4" />
-                  <span>{user.email}</span>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate("/admin")}
-                  className="hidden md:inline-flex"
-                >
-                  {t("navDashboard")}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="hidden sm:inline">{t("navLogout")}</span>
-                </Button>
-              </>
-            ) : (
               <Button
-                onClick={() => navigate("/auth")}
+                onClick={() => navigate("/admin-panel/login")}
                 size="sm"
                 className="gap-2 shadow-md transition-all hover:shadow-lg"
               >
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("navLogin")}</span>
               </Button>
-            )}
           </div>
         </div>
         <nav className="flex w-full items-center gap-1 overflow-x-auto border-t border-border py-2 md:justify-center md:gap-6">

@@ -1,7 +1,7 @@
 import {useState, useEffect, useCallback, useRef} from "react";
 import { Search } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { publicApi } from "@/services/api";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -80,14 +80,7 @@ const Menu = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("*")
-        .eq("is_active", true)
-        .order("display_order");
-
-      if (error) throw error;
-      setCategories(data || []);
+      setCategories(await publicApi.menuCategories());
     } catch (error) {
       console.error("Failed to load categories:", error);
     }
@@ -96,41 +89,17 @@ const Menu = () => {
   const fetchMenuItems = useCallback(async () => {
     setLoading(true);
     try {
-      // Build the query
-      let query = supabase.from("menu_items").select("*", { count: "exact" });
-
-      // Apply search filter
-      if (searchQuery.trim()) {
-        query = query.or(
-          `name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`
-        );
-      }
-
-      // Apply category filter
-      if (selectedCategory !== "all") {
-        query = query.eq("category_id", selectedCategory);
-      }
-
-      // Apply sorting
+      let data = await publicApi.menuItems();
+      const search = searchQuery.trim().toLowerCase();
+      if (search) data = data.filter((item) => item.name.toLowerCase().includes(search) || item.description.toLowerCase().includes(search));
+      if (selectedCategory !== "all") data = data.filter((item) => item.category_id === selectedCategory);
       if (sortBy !== "default") {
-        const [sortField, sortDirection] = sortBy.split("-");
-        query = query.order(sortField, { ascending: sortDirection === "asc" });
-      } else {
-        // Default: order by created_at to maintain natural database order
-        query = query.order("created_at", { ascending: true });
+        const [field, direction] = sortBy.split("-");
+        data.sort((a, b) => ((field === "price" ? a.price - b.price : a.name.localeCompare(b.name)) * (direction === "desc" ? -1 : 1)));
       }
-
-      // Apply pagination
+      setTotalCount(data.length);
       const from = (currentPage - 1) * ITEMS_PER_PAGE;
-      const to = from + ITEMS_PER_PAGE - 1;
-      query = query.range(from, to);
-
-      const { data, error, count } = await query;
-
-      if (error) throw error;
-
-      setMenuItems(data || []);
-      setTotalCount(count || 0);
+      setMenuItems(data.slice(from, from + ITEMS_PER_PAGE));
     } catch (error) {
       toast({
         title: t("menuLoadError"),
@@ -143,14 +112,7 @@ const Menu = () => {
   }, [currentPage, searchQuery, selectedCategory, sortBy, toast, t]);
 
   const trackPageView = async () => {
-    try {
-      await supabase.from("page_views").insert({
-        page_path: window.location.pathname,
-        user_agent: navigator.userAgent,
-      });
-    } catch (error) {
-      console.error("Failed to track page view:", error);
-    }
+    // Page analytics no longer writes customer data to the retired Supabase project.
   };
 
   const handlePageChange = (page: number) => {
