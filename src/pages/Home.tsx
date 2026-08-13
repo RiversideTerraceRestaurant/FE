@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarCheck, ChevronDown, UtensilsCrossed } from "lucide-react";
+import { ArrowRight, CalendarCheck, ChevronDown, ExternalLink, Quote, Star, UtensilsCrossed } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { publicApi } from "@/services/api";
@@ -17,6 +17,7 @@ import { AREA_PHOTOS } from "@/data/areaPhotos";
 
 const heroImage = AREA_PHOTOS.Terrace[0];
 const restaurantAreas = Object.entries(AREA_PHOTOS).map(([name, images]) => ({ name, image: images[0] }));
+const mapsUrl = "https://maps.app.goo.gl/UQ64H1smLtqcHJCV6";
 
 export default function Home() {
   const [items, setItems] = useState<MenuItem[]>([]);
@@ -135,6 +136,42 @@ export default function Home() {
               <CarouselNext className="right-3 border-white/70 bg-white/85 shadow-lg" />
             </Carousel>
           ) : <p className="text-muted-foreground">{t("homeLoadingMenu")}</p>}
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 pb-16 md:pb-24" aria-labelledby="google-reviews-title">
+        <div className="home-morph liquid-glass overflow-hidden p-6 md:p-10">
+          <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div className="mb-3 flex items-center gap-2 text-amber-500" aria-label="5 out of 5 stars">
+                {Array.from({ length: 5 }).map((_, index) => <Star key={index} className="h-5 w-5 fill-current" />)}
+                <span className="ml-1 text-sm font-semibold text-foreground">Google Maps</span>
+              </div>
+              <h2 id="google-reviews-title" className="text-3xl font-semibold md:text-5xl">{t("homeReviewsTitle")}</h2>
+              <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">{t("homeReviewsText")}</p>
+            </div>
+            <Button asChild variant="outline" className="w-fit shrink-0 rounded-full bg-white/70 px-6">
+              <a href={mapsUrl} target="_blank" rel="noreferrer">
+                {t("homeReviewsButton")}<ExternalLink className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {[1, 2, 3].map((review) => (
+              <article key={review} className="flex min-h-60 flex-col rounded-[1.5rem] border border-white/80 bg-white/65 p-6 shadow-lg backdrop-blur-md">
+                <Quote className="mb-5 h-8 w-8 text-primary/45" />
+                <p className="flex-1 text-base leading-7 text-foreground/85">{t(`homeReview${review}Text`)}</p>
+                <div className="mt-6 border-t border-border/60 pt-4">
+                  <p className="font-semibold">{t(`homeReview${review}Author`)}</p>
+                  <div className="mt-1 flex items-center gap-1 text-amber-500">
+                    {Array.from({ length: 5 }).map((_, index) => <Star key={index} className="h-3.5 w-3.5 fill-current" />)}
+                    <span className="ml-2 text-xs text-muted-foreground">Google Maps</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
