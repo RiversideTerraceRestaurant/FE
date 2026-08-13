@@ -43,7 +43,7 @@ function withComputedConflicts(bookings: Booking[]) {
   });
 }
 
-export function useBookings(tableIdByName: Record<string, number> = {}, readOnly = false) {
+export function useBookings(tableIdByName: Record<string, number> = {}, readOnly = false, selectedDate = "") {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [deletedBookings, setDeletedBookings] = useState<DeletedBooking[]>([]);
   const [backendById, setBackendById] = useState<Record<string, BackendBooking>>({});
@@ -52,7 +52,8 @@ export function useBookings(tableIdByName: Record<string, number> = {}, readOnly
   const fetchBookings = useCallback(async () => {
     setLoading(true);
     try {
-      const data = readOnly ? await publicApi.timeMapBookings() : await adminApi.bookings();
+      const params = selectedDate ? { date: selectedDate } : {};
+      const data = readOnly ? await publicApi.timeMapBookings(params) : await adminApi.bookings(params);
       const backendMap = Object.fromEntries(data.map((booking) => [String(booking.id), booking]));
       const active = data
         .filter((booking) => ACTIVE_STATUSES.includes(booking.status))
@@ -75,7 +76,7 @@ export function useBookings(tableIdByName: Record<string, number> = {}, readOnly
     } finally {
       setLoading(false);
     }
-  }, [readOnly]);
+  }, [readOnly, selectedDate]);
 
   useEffect(() => {
     void fetchBookings();

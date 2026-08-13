@@ -28,6 +28,7 @@ const Index = ({ embedded = false, viewOnly = false }: TimeMapIndexProps) => {
   const [exporting, setExporting] = useState(false);
   const [reloading, setReloading] = useState(false);
   const timelineRef = useRef<TimelineViewHandle>(null);
+  const dateStr = format(date, "yyyy-MM-dd");
 
   const canEdit = isLoggedIn && !viewOnly;
   const { locations, tables, tableIdByName, selectedLocationId, setSelectedLocationId } = useLocations(viewOnly);
@@ -43,9 +44,8 @@ const Index = ({ embedded = false, viewOnly = false }: TimeMapIndexProps) => {
     permanentDeleteBooking,
     toggleSeal,
     refetch,
-  } = useBookings(tableIdByName, viewOnly);
+  } = useBookings(tableIdByName, viewOnly, dateStr);
 
-  const dateStr = format(date, "yyyy-MM-dd");
   const allDayBookings = getBookingsForDate(dateStr);
   const dayBookings = allDayBookings.filter(
     (b) => !selectedLocationId || b.location_id === selectedLocationId

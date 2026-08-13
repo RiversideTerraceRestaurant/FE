@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Check, ChevronLeft, ChevronRight, Save, Search, Trash2, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, RefreshCw, Save, Search, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -188,9 +188,15 @@ export default function AdminBooking() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h2 className="text-2xl font-semibold">Bookings</h2>
-        <p className="text-sm text-muted-foreground">Tap a booking to review details and manage its status.</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="text-2xl font-semibold">Bookings</h2>
+          <p className="text-sm text-muted-foreground">Tap a booking to review details and manage its status.</p>
+        </div>
+        <Button type="button" variant="outline" size="sm" disabled={loading} onClick={() => void load(page)}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          Reload
+        </Button>
       </div>
       <div className="grid gap-3 rounded-xl border bg-white p-3 sm:p-4 md:grid-cols-5">
         <Input type="date" value={filters.date} onChange={(event) => setFilters({ ...filters, date: event.target.value })} />
@@ -260,19 +266,19 @@ export default function AdminBooking() {
       </div>
 
       <Dialog open={Boolean(selectedBooking)} onOpenChange={(open) => !open && closeBooking()}>
-        <DialogContent className="max-h-[calc(100dvh-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-[calc(100%-1rem)] max-w-3xl overflow-y-auto rounded-2xl p-4 sm:p-6">
+        <DialogContent className="max-h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-3xl touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain rounded-2xl p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>{selectedBooking?.bookingCode}</DialogTitle>
             <DialogDescription>Review booking details before approving, rejecting, updating, cancelling, or deleting.</DialogDescription>
           </DialogHeader>
 
           {selectedBooking && draft && (
-            <div className="space-y-5">
+            <div className="min-w-0 space-y-5">
               <div className={`rounded-md border p-4 ${selectedBooking.status === "PENDING" ? "border-red-300 bg-red-50" : "bg-white"}`}>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <p className="font-semibold">{selectedBooking.customerName}</p>
-                    <p className="text-sm text-muted-foreground">{selectedBooking.customerEmail} · {selectedBooking.customerPhone}</p>
+                    <p className="break-all text-sm text-muted-foreground sm:break-normal">{selectedBooking.customerEmail} · {selectedBooking.customerPhone}</p>
                   </div>
                   <Badge variant={selectedBooking.status === "REJECTED" ? "destructive" : "default"}>{selectedBooking.status}</Badge>
                 </div>
@@ -318,7 +324,7 @@ export default function AdminBooking() {
                 </div>
                 <div className="sm:col-span-2">
                   <Label htmlFor="booking-note">Note</Label>
-                  <Textarea id="booking-note" value={draft.note} onChange={(event) => setDraft({ ...draft, note: event.target.value })} />
+                  <Textarea className="text-base sm:text-sm" id="booking-note" value={draft.note} onChange={(event) => setDraft({ ...draft, note: event.target.value })} />
                 </div>
                 <div className="sm:col-span-2">
                   <Label>Tables</Label>
@@ -388,15 +394,19 @@ function BookingMiniMap({ booking, tables }: { booking: Booking; tables: Restaur
   const maxX = Math.max(...tables.map((table) => table.x + table.width), 1);
   const maxY = Math.max(...tables.map((table) => table.y + table.height), 1);
   return (
-    <div className="rounded-xl border bg-slate-50 p-3">
+    <div className="min-w-0 max-w-full overflow-hidden rounded-xl border bg-slate-50 p-3">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div><p className="font-semibold">Booking time map</p><p className="text-sm text-muted-foreground">{booking.bookingDate} · {booking.startTime}–{booking.endTime} · {booking.area}</p></div>
         <p className="text-sm font-medium text-blue-700">Highlighted: {booking.tables.map((table) => table.tableNumber).join(", ")}</p>
       </div>
-      <div className="relative aspect-[16/9] min-h-52 overflow-hidden rounded-lg border bg-white">
+      <div className="relative h-60 w-full max-w-full overflow-hidden rounded-lg border bg-white sm:aspect-[16/9] sm:h-auto sm:min-h-52">
         {tables.map((table) => {
           const active = selected.has(table.id);
-          return <div key={table.id} className={`absolute flex items-center justify-center rounded-md border-2 text-xs font-bold shadow-sm ${active ? "z-10 border-blue-700 bg-blue-600 text-white ring-4 ring-blue-200" : "border-slate-300 bg-slate-100 text-slate-600"}`} style={{left:`${(table.x/maxX)*88+3}%`,top:`${(table.y/maxY)*80+5}%`,width:`${Math.max(7,(table.width/maxX)*90)}%`,height:`${Math.max(12,(table.height/maxY)*86)}%`,transform:`rotate(${table.rotation||0}deg)`}}>{table.tableNumber}</div>;
+          const width = Math.min(18, Math.max(8, (table.width / maxX) * 86));
+          const height = Math.min(25, Math.max(12, (table.height / maxY) * 80));
+          const left = Math.min(98 - width, Math.max(2, (table.x / maxX) * (94 - width) + 2));
+          const top = Math.min(98 - height, Math.max(2, (table.y / maxY) * (94 - height) + 2));
+          return <div key={table.id} className={`absolute flex items-center justify-center rounded-md border-2 text-[11px] font-bold shadow-sm ${active ? "z-10 border-blue-700 bg-blue-600 text-white ring-2 ring-blue-200 sm:ring-4" : "border-slate-300 bg-slate-100 text-slate-600"}`} style={{ left: `${left}%`, top: `${top}%`, width: `${width}%`, height: `${height}%`, transform: `rotate(${table.rotation || 0}deg)` }}>{table.tableNumber}</div>;
         })}
       </div>
     </div>
@@ -426,7 +436,7 @@ function EditableField({
   return (
     <div>
       <Label>{label}</Label>
-      <Input type={type} value={value} onChange={(event) => onChange(event.target.value)} />
+      <Input className="text-base sm:text-sm" type={type} value={value} onChange={(event) => onChange(event.target.value)} />
     </div>
   );
 }
