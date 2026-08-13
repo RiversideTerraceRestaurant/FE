@@ -17,7 +17,7 @@ export default function AdminLogin() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { t } = useLanguage();
-  const redirectTo = searchParams.get("redirect") || "/admin-panel/booking";
+  const redirectTo = searchParams.get("redirect") || "/admin-panel/time-map";
 
   if (adminAuth.isLoggedIn()) {
     return <Navigate to={redirectTo} replace />;

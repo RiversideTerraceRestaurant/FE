@@ -46,7 +46,7 @@ const App = () => (
               )}
             />
             <Route path="/admin-panel/login" element={<AdminLogin />} />
-            <Route path="/admin-panel" element={<Navigate to="/admin-panel/booking" replace />} />
+            <Route path="/admin-panel" element={<Navigate to="/admin-panel/time-map" replace />} />
             <Route element={<AdminLayout />}>
               <Route path="/admin-panel/booking" element={<AdminBooking />} />
               <Route path="/admin-panel/table" element={<AdminTable />} />

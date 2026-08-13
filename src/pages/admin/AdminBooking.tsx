@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { Check, Save, Search, Trash2, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Check, ChevronLeft, ChevronRight, Save, Search, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,6 +28,9 @@ type BookingDraft = {
 
 export default function AdminBooking() {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [filters, setFilters] = useState({ date: "", area: "", status: "", search: "", tableNumber: "" });
   const [loading, setLoading] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
@@ -35,20 +39,35 @@ export default function AdminBooking() {
   const [selectedTableIds, setSelectedTableIds] = useState<number[]>([]);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const openedDeepLinkRef = useRef<string | null>(null);
 
   useEffect(() => {
     void load();
   }, []);
 
   useEffect(() => {
+    const bookingId = searchParams.get("bookingId");
+    if (!bookingId || openedDeepLinkRef.current === bookingId) return;
+    openedDeepLinkRef.current = bookingId;
+    void adminApi.booking(Number(bookingId)).then(openBooking).catch((error) => {
+      toast({ title: "Cannot open booking", description: error instanceof Error ? error.message : "Booking not found.", variant: "destructive" });
+    });
+  }, [searchParams]);
+
+  useEffect(() => {
     if (!draft?.area) return;
     void loadAdminTables(draft.area);
   }, [draft?.area]);
 
-  const load = async () => {
+  const load = async (requestedPage = page) => {
     setLoading(true);
     try {
-      setBookings(await adminApi.bookings(filters));
+      const result = await adminApi.bookingsPage({ ...filters, page: String(requestedPage), size: "10" });
+      setBookings(result.content);
+      setPage(result.page);
+      setTotalPages(result.totalPages);
+      setTotalElements(result.totalElements);
     } catch (error) {
       toast({ title: "Cannot load bookings", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
     } finally {
@@ -80,6 +99,10 @@ export default function AdminBooking() {
     setDraft(null);
     setAdminTables([]);
     setSelectedTableIds([]);
+    if (searchParams.has("bookingId")) {
+      searchParams.delete("bookingId");
+      setSearchParams(searchParams, { replace: true });
+    }
   };
 
   const loadAdminTables = async (area: RestaurantArea) => {
@@ -188,7 +211,15 @@ export default function AdminBooking() {
         <Input placeholder="Table" value={filters.tableNumber} onChange={(event) => setFilters({ ...filters, tableNumber: event.target.value })} />
         <div className="flex gap-2">
           <Input placeholder="Name, email, phone" value={filters.search} onChange={(event) => setFilters({ ...filters, search: event.target.value })} />
-          <Button type="button" onClick={load}><Search className="h-4 w-4" /></Button>
+          <Button type="button" onClick={() => { setPage(0); void load(0); }}><Search className="h-4 w-4" /></Button>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border bg-white px-4 py-3">
+        <p className="text-sm text-muted-foreground">{totalElements} bookings · Page {totalPages === 0 ? 0 : page + 1} of {totalPages}</p>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" disabled={loading || page === 0} onClick={() => void load(page - 1)}><ChevronLeft className="mr-1 h-4 w-4" />Previous</Button>
+          <Button variant="outline" size="sm" disabled={loading || page + 1 >= totalPages} onClick={() => void load(page + 1)}>Next<ChevronRight className="ml-1 h-4 w-4" /></Button>
         </div>
       </div>
 
@@ -251,6 +282,8 @@ export default function AdminBooking() {
                   <SummaryItem label="Created" value={new Date(selectedBooking.createdAt).toLocaleString()} />
                 </div>
               </div>
+
+              <BookingMiniMap booking={selectedBooking} tables={adminTables} />
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <EditableField label="Customer name" value={draft.customerName} onChange={(value) => setDraft({ ...draft, customerName: value })} />
@@ -345,6 +378,27 @@ export default function AdminBooking() {
           )}
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+function BookingMiniMap({ booking, tables }: { booking: Booking; tables: RestaurantTable[] }) {
+  const selected = new Set(booking.tables.map((table) => table.id));
+  if (tables.length === 0) return <div className="rounded-md border bg-muted/20 p-4 text-sm text-muted-foreground">Loading time map…</div>;
+  const maxX = Math.max(...tables.map((table) => table.x + table.width), 1);
+  const maxY = Math.max(...tables.map((table) => table.y + table.height), 1);
+  return (
+    <div className="rounded-xl border bg-slate-50 p-3">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div><p className="font-semibold">Booking time map</p><p className="text-sm text-muted-foreground">{booking.bookingDate} · {booking.startTime}–{booking.endTime} · {booking.area}</p></div>
+        <p className="text-sm font-medium text-blue-700">Highlighted: {booking.tables.map((table) => table.tableNumber).join(", ")}</p>
+      </div>
+      <div className="relative aspect-[16/9] min-h-52 overflow-hidden rounded-lg border bg-white">
+        {tables.map((table) => {
+          const active = selected.has(table.id);
+          return <div key={table.id} className={`absolute flex items-center justify-center rounded-md border-2 text-xs font-bold shadow-sm ${active ? "z-10 border-blue-700 bg-blue-600 text-white ring-4 ring-blue-200" : "border-slate-300 bg-slate-100 text-slate-600"}`} style={{left:`${(table.x/maxX)*88+3}%`,top:`${(table.y/maxY)*80+5}%`,width:`${Math.max(7,(table.width/maxX)*90)}%`,height:`${Math.max(12,(table.height/maxY)*86)}%`,transform:`rotate(${table.rotation||0}deg)`}}>{table.tableNumber}</div>;
+        })}
+      </div>
     </div>
   );
 }

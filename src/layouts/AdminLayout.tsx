@@ -1,8 +1,10 @@
 import { BarChart3, CalendarCheck, Clock3, LogOut, Table2, UtensilsCrossed } from "lucide-react";
 import { NavLink, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { adminAuth } from "@/services/api";
+import { adminApi, adminAuth } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { PushNotificationButton } from "@/components/PushNotificationButton";
+import { useEffect, useState } from "react";
+import { useBookingRealtime } from "@/hooks/use-booking-realtime";
 
 const links = [
   { to: "/admin-panel/booking", label: "Booking", icon: CalendarCheck },
@@ -16,6 +18,12 @@ export function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const isTimeMap = location.pathname === "/admin-panel/time-map";
+  const [pendingCount, setPendingCount] = useState(0);
+  const loadPendingCount = async () => {
+    try { setPendingCount((await adminApi.pendingBookingCount()).count); } catch { /* auth redirect/error is handled by API client */ }
+  };
+  useEffect(() => { void loadPendingCount(); }, []);
+  useBookingRealtime(() => { void loadPendingCount(); });
   if (!adminAuth.isLoggedIn()) {
     return <Navigate to={`/admin-panel/login?redirect=${encodeURIComponent(`${location.pathname}${location.search}`)}`} replace />;
   }
@@ -45,7 +53,7 @@ export function AdminLayout() {
                   }`
                 }
               >
-                <Icon className="h-4 w-4 shrink-0" />
+                <span className="relative"><Icon className="h-4 w-4 shrink-0" />{to === "/admin-panel/booking" && pendingCount > 0 && <span className="absolute -right-3 -top-3 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white">{pendingCount > 99 ? "99+" : pendingCount}</span>}</span>
                 <span className="truncate">{label}</span>
               </NavLink>
             ))}

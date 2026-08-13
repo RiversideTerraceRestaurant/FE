@@ -199,6 +199,12 @@ export const adminApi = {
     const search = new URLSearchParams(Object.entries(params).filter(([, value]) => value));
     return request<Booking[]>(`/api/admin/bookings${search.size ? `?${search.toString()}` : ""}`, {}, true);
   },
+  bookingsPage: (params: Record<string, string> = {}) => {
+    const search = new URLSearchParams(Object.entries(params).filter(([, value]) => value !== ""));
+    return request<{ content: Booking[]; page: number; size: number; totalElements: number; totalPages: number }>(`/api/admin/bookings/page?${search.toString()}`, {}, true);
+  },
+  booking: (id: number) => request<Booking>(`/api/admin/bookings/${id}`, {}, true),
+  pendingBookingCount: () => request<{ count: number }>("/api/admin/bookings/pending-count", {}, true),
   createBooking: (payload: {
     customerName: string;
     customerEmail?: string;
